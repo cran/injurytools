@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2023-01-25" />
+
+<title>Estimate Measures of Injury Epidemiology</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Estimate Measures of Injury
+Epidemiology</h1>
+<h4 class="date">2023-01-25</h4>
+
+
+
+<!-- <div class="alert alert-danger"> -->
+<!--   <strong>WARNING!</strong> File under construction. -->
+<!-- </div>     -->
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(injurytools)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span></code></pre></div>
+<p>Whenever one collects and prepares the data, the next natural step is
+to summarize and explore these data. In this case, from a sports-applied
+point of view, one wants to know how many and what type of injuries have
+occurred, how often they have occurred or what the load has been.</p>
+<p>This document shows convenient functions from
+<code>injurytools</code> to describe sports injury data, in terms of
+measures used in sports injury epidemiology (see <span class="citation">Bahr and Holme (<a href="#ref-Bahr2003" role="doc-biblioref">2003</a>)</span> and <span class="citation">Waldén
+et al. (<a href="#ref-walden2023" role="doc-biblioref">2023</a>)</span>). Below, these measures are
+explained and then, <code>injsummary()</code> and <code>injprev()</code>
+functions are illustrated.</p>
+<div id="measures-of-occurrence" class="section level1">
+<h1>Measures of occurrence</h1>
+<div id="rates" class="section level2">
+<h2>Rates</h2>
+<p>As <span class="citation">Hodgson Phillips (<a href="#ref-Hodgson2000" role="doc-biblioref">2000</a>)</span> state,</p>
+<p><em>“Sports injuries occur when athletes are exposed to their given
+sport and they occur under specific conditions, at a known time and
+place.”</em></p>
+<p>Thus, when attempting to describe the distribution of injuries it is
+necessary to relate this to the population at risk over a specified time
+period. This is why the fundamental unit of measurement is
+<strong>rate</strong>.</p>
+<p>A rate is a measure that consists of a denominator and a numerator
+over a period of time. Denominator data can be a number of different
+things (e.g. number of minutes trained/played, number of matches
+played). As such, it reflects the speed at which new “injury-related”
+events occur.</p>
+<div id="injury-incidence-rate" class="section level3">
+<h3>Injury incidence rate</h3>
+<p><strong>Injury incidence rate</strong> is the number of new injury
+cases (<span class="math inline">\(I\)</span>) per unit of
+player-exposure time, i.e.</p>
+<p><span class="math display">\[ I_{r} = \frac{I}{\Delta T}\]</span>
+where <span class="math inline">\(\Delta T\)</span> is the total time
+under risk of the study population.</p>
+</div>
+<div id="injury-burden-rate" class="section level3">
+<h3>Injury burden rate</h3>
+<p><strong>Injury burden rate</strong> is the number of days lost (<span class="math inline">\(n_d\)</span>) per unit of player-exposure time,
+i.e.</p>
+<p><span class="math display">\[I_{br} = \frac{n_d}{\Delta T}\]</span>
+where <span class="math inline">\(\Delta T\)</span> is the total time
+under risk of the study population.</p>
+<div class="alert alert-warning" role="alert">
+<p><strong>NOTE 1:</strong> as <span class="citation">Bahr, Clarsen, and
+Ekstrand (<a href="#ref-Bahr2018" role="doc-biblioref">2018</a>)</span>
+state, injury incidence (likelihood) and injury burden (severity) should
+be reported and assessed in conjunction rather than in isolation. In
+this regard, see the risk matrix plot provided by
+<code>gg_injriskmatrix()</code> function.</p>
+</div>
+<div class="alert alert-warning" role="alert">
+<p><strong>NOTE 2:</strong> neither injury incidence (<span class="math inline">\(I_r\)</span>) nor injury burden (<span class="math inline">\(I_{br}\)</span>) are ratios, and they are not
+interpreted as a probability; they are rates and their unit
+(person-time)<span class="math inline">\(^{-1}\)</span> (e.g. per 1000h
+of player-exposure, per player-season etc.).</p>
+</div>
+<div class="alert alert-warning" role="alert">
+<p><strong>NOTE 3:</strong> as <span class="citation">Waldén et al. (<a href="#ref-walden2023" role="doc-biblioref">2023</a>)</span> point out,
+incidence-based measures that provide a standard time-window for the
+population at risk (injuries per hour) are preferable to measures for
+which the time at risk varies across individuals (injuries per
+athletic-exposure, injuries per number of matches), because time-based
+measures better facilitate comparison across sports.</p>
+</div>
+</div>
+</div>
+<div id="prevalence" class="section level2">
+<h2>Prevalence</h2>
+<p><strong>Prevalence</strong>, period prevalence, is a proportion that
+refers to the number of players that has reported the injury of interest
+(<span class="math inline">\(X\)</span>) divided by the total
+player-population at risk at any time during the specified period of
+time (<span class="math inline">\(\Delta T\)</span> time window). This
+includes players who already had the condition at the start of the study
+period as well as those who acquired it during that period.</p>
+<p><span class="math display">\[P = \frac{X}{N}\]</span> where <span class="math inline">\(X\)</span> is the number of injury cases and <span class="math inline">\(N\)</span> the total number of players in the
+study at any point in the window of time <span class="math inline">\(\Delta T\)</span>.</p>
+</div>
+</div>
+<div id="in-practice" class="section level1">
+<h1>In practice</h1>
+<p>Again, as in the <a href="https://lzumeta.github.io/injurytools/articles/prepare-injury-data.html">prepare-data</a>
+vignette, we use the data sets available from the
+<code>injurytools</code> package: data from Liverpool Football Club
+male’s first team players over two consecutive seasons, 2017-2018 and
+2018-2019, scrapped from <a href="https://www.transfermarkt.com/" class="uri">https://www.transfermarkt.com/</a> website<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<div id="injsummary" class="section level2">
+<h2>- <code>injsummary()</code></h2>
+<details>
+<summary>
+Prepare data
+</summary>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df_exposures <span class="ot">&lt;-</span> <span class="fu">prepare_exp</span>(raw_df_exposures, <span class="at">player =</span> <span class="st">&quot;player_name&quot;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">date =</span> <span class="st">&quot;year&quot;</span>, <span class="at">time_expo =</span> <span class="st">&quot;minutes_played&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df_injuries  <span class="ot">&lt;-</span> <span class="fu">prepare_inj</span>(raw_df_injuries, <span class="at">player =</span> <span class="st">&quot;player_name&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">date_injured =</span> <span class="st">&quot;from&quot;</span>, <span class="at">date_recovered =</span> <span class="st">&quot;until&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>injd         <span class="ot">&lt;-</span> <span class="fu">prepare_all</span>(<span class="at">data_exposures =</span> df_exposures,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data_injuries  =</span> df_injuries,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">exp_unit =</span> <span class="st">&quot;matches_minutes&quot;</span>)</span></code></pre></div>
+</details>
+<p>Now, the preprocessed data is passed to <code>injsummary()</code> to
+calculate injury summary statistics:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>injds <span class="ot">&lt;-</span> <span class="fu">injsummary</span>(injd)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in injsummary_unit(unit, injds, quiet): </span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Exposure time unit is matches_minutes</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   So... Injury incidence and injury burden are calculated per 100 player-matches of exposure (90 minutes times 100)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in injsummary_unit(unit, injds_overall, quiet): </span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Exposure time unit is matches_minutes</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   So... Injury incidence and injury burden are calculated per 100 player-matches of exposure (90 minutes times 100)</span></span></code></pre></div>
+<p>We notice that it throws some warning messages (unless
+<code>quiet = TRUE</code>). They are thrown to make it clear what the
+exposure time unit is<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+<p>What <code>injsummary()</code> returns as its output is a list of two
+elements, i.e. the output stored (here) in the <code>injds</code> object
+consists of,</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(injds, <span class="dv">1</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; List of 2</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ playerwise: tibble [28 × 9] (S3: tbl_df/tbl/data.frame)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ overall   : tibble [1 × 14] (S3: tbl_df/tbl/data.frame)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;class&quot;)= chr [1:2] &quot;injds&quot; &quot;list&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;unit_exposure&quot;)= chr &quot;matches_minutes&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;unit_timerisk&quot;)= chr &quot;100 player-match&quot;</span></span></code></pre></div>
+<p>two data frames (two tables), which can be accessed by typing
+<code>injds[[1]]</code> (or <code>injds[[&quot;playerwise&quot;]]</code>) and
+<code>injds[[2]]</code> (<code>injds[[&quot;overal&quot;]]</code>).</p>
+<p>To present the results in a more tidier and comprehensible way
+(instead of <strong>R</strong> code styled output) the following can be
+done:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># format the &#39;playerwise&#39; data frame for output as a table</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>injds[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(injincidence)) <span class="sc">%&gt;%</span> <span class="co"># sort by decreasing order of injincidence</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Player&quot;</span>, <span class="st">&quot;N injuries&quot;</span>, <span class="st">&quot;N days lost&quot;</span>, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Mean days lost&quot;</span>, <span class="st">&quot;Median days lost&quot;</span>, <span class="st">&quot;IQR days lost&quot;</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Total exposure&quot;</span>, <span class="st">&quot;Incidence&quot;</span>, <span class="st">&quot;Burden&quot;</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Player
+</th>
+<th style="text-align:right;">
+N injuries
+</th>
+<th style="text-align:right;">
+N days lost
+</th>
+<th style="text-align:right;">
+Mean days lost
+</th>
+<th style="text-align:right;">
+Median days lost
+</th>
+<th style="text-align:left;">
+IQR days lost
+</th>
+<th style="text-align:right;">
+Total exposure
+</th>
+<th style="text-align:right;">
+Incidence
+</th>
+<th style="text-align:right;">
+Burden
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+adam-lallana
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+302
+</td>
+<td style="text-align:right;">
+43.14
+</td>
+<td style="text-align:right;">
+43.0
+</td>
+<td style="text-align:left;">
+18.5-52.5
+</td>
+<td style="text-align:right;">
+700
+</td>
+<td style="text-align:right;">
+77.14
+</td>
+<td style="text-align:right;">
+3882.86
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+daniel-sturridge
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+122
+</td>
+<td style="text-align:right;">
+30.50
+</td>
+<td style="text-align:right;">
+33.5
+</td>
+<td style="text-align:left;">
+12-52
+</td>
+<td style="text-align:right;">
+927
+</td>
+<td style="text-align:right;">
+29.13
+</td>
+<td style="text-align:right;">
+1184.47
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+divock-origi
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2.50
+</td>
+<td style="text-align:right;">
+2.5
+</td>
+<td style="text-align:left;">
+1.25-3.75
+</td>
+<td style="text-align:right;">
+366
+</td>
+<td style="text-align:right;">
+24.59
+</td>
+<td style="text-align:right;">
+122.95
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+philippe-coutinho
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+62
+</td>
+<td style="text-align:right;">
+15.50
+</td>
+<td style="text-align:right;">
+18.5
+</td>
+<td style="text-align:left;">
+9-25
+</td>
+<td style="text-align:right;">
+1117
+</td>
+<td style="text-align:right;">
+24.17
+</td>
+<td style="text-align:right;">
+499.55
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+naby-keita
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+89
+</td>
+<td style="text-align:right;">
+22.25
+</td>
+<td style="text-align:right;">
+19.0
+</td>
+<td style="text-align:left;">
+13.5-27.75
+</td>
+<td style="text-align:right;">
+1393
+</td>
+<td style="text-align:right;">
+19.38
+</td>
+<td style="text-align:right;">
+575.02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dejan-lovren
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+160
+</td>
+<td style="text-align:right;">
+22.86
+</td>
+<td style="text-align:right;">
+13.0
+</td>
+<td style="text-align:left;">
+9-28.5
+</td>
+<td style="text-align:right;">
+3109
+</td>
+<td style="text-align:right;">
+17.37
+</td>
+<td style="text-align:right;">
+463.17
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+jordan-henderson
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+91
+</td>
+<td style="text-align:right;">
+10.11
+</td>
+<td style="text-align:right;">
+7.0
+</td>
+<td style="text-align:left;">
+4-11
+</td>
+<td style="text-align:right;">
+4154
+</td>
+<td style="text-align:right;">
+17.33
+</td>
+<td style="text-align:right;">
+197.16
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+xherdan-shaqiri
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+67
+</td>
+<td style="text-align:right;">
+33.50
+</td>
+<td style="text-align:right;">
+33.5
+</td>
+<td style="text-align:left;">
+23.25-43.75
+</td>
+<td style="text-align:right;">
+1057
+</td>
+<td style="text-align:right;">
+17.03
+</td>
+<td style="text-align:right;">
+570.48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fabinho
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+5.50
+</td>
+<td style="text-align:right;">
+5.5
+</td>
+<td style="text-align:left;">
+1.5-9.5
+</td>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:right;">
+13.41
+</td>
+<td style="text-align:right;">
+98.36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+james-milner
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+8.00
+</td>
+<td style="text-align:right;">
+9.0
+</td>
+<td style="text-align:left;">
+6.25-11.75
+</td>
+<td style="text-align:right;">
+3548
+</td>
+<td style="text-align:right;">
+12.68
+</td>
+<td style="text-align:right;">
+121.76
+</td>
+</tr>
+</tbody>
+</table>
+<p>Using <a href="https://rmarkdown.rstudio.com/">RMarkdown</a>, and in
+particular, <code>knitr::kable()</code> function.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># format the table of total incidence and burden (main columns)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>injds[[<span class="dv">2</span>]] <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">row.names =</span> <span class="st">&quot;TOTAL&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;N injuries&quot;</span>, <span class="st">&quot;N days lost&quot;</span>, <span class="st">&quot;Mean days lost&quot;</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Median days lost&quot;</span>, <span class="st">&quot;IQR days lost&quot;</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Total exposure&quot;</span>, <span class="st">&quot;Incidence&quot;</span>, <span class="st">&quot;Burden&quot;</span>),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">row.names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+N injuries
+</th>
+<th style="text-align:right;">
+N days lost
+</th>
+<th style="text-align:right;">
+Mean days lost
+</th>
+<th style="text-align:right;">
+Median days lost
+</th>
+<th style="text-align:left;">
+IQR days lost
+</th>
+<th style="text-align:right;">
+Total exposure
+</th>
+<th style="text-align:right;">
+Incidence
+</th>
+<th style="text-align:right;">
+Burden
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+TOTAL
+</td>
+<td style="text-align:right;">
+82
+</td>
+<td style="text-align:right;">
+2049
+</td>
+<td style="text-align:right;">
+18.97
+</td>
+<td style="text-align:right;">
+7.5
+</td>
+<td style="text-align:left;">
+1-20.25
+</td>
+<td style="text-align:right;">
+74690
+</td>
+<td style="text-align:right;">
+9.88
+</td>
+<td style="text-align:right;">
+246.9
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note that to provide numbers that are easy to interpret and to avoid
+small decimals, injury incidence and injury burden are reported ‘per 100
+player-match exposure’. As in this example exposure time is
+<strong>minutes played in matches</strong>, we multiply the rates by
+90*100 (i.e. 90 minutes lasts a football match). Therefore, the reported
+incidence rate is estimated by <span class="math inline">\(\hat{I}_r =
+\frac{82}{74690}\times90\times100\)</span>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># format the table of total incidence and burden (point + ci estimates)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>injds_tot_cis <span class="ot">&lt;-</span> injds[[<span class="dv">2</span>]] <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">7</span><span class="sc">:</span><span class="fu">last_col</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">row.names =</span> <span class="st">&quot;TOTAL&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>injds_tot_cis<span class="sc">$</span>ci_injincidence <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;[&quot;</span>, <span class="fu">round</span>(injds_tot_cis<span class="sc">$</span>injincidence_lower, <span class="dv">1</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&quot;, &quot;</span>,<span class="fu">round</span>(injds_tot_cis<span class="sc">$</span>injincidence_upper, <span class="dv">1</span>), <span class="st">&quot;]&quot;</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>injds_tot_cis<span class="sc">$</span>ci_injburden <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;[&quot;</span>, <span class="fu">round</span>(injds_tot_cis<span class="sc">$</span>injburden_lower, <span class="dv">1</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&quot;, &quot;</span>,<span class="fu">round</span>(injds_tot_cis<span class="sc">$</span>injburden_upper, <span class="dv">1</span>), <span class="st">&quot;]&quot;</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>conf_level <span class="ot">&lt;-</span> <span class="fu">attr</span>(injds, <span class="st">&quot;conf_level&quot;</span>)<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>injds_tot_cis <span class="sc">%&gt;%</span> </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span>, <span class="dv">9</span>, <span class="dv">2</span>, <span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Incidence&quot;</span>,  <span class="fu">paste0</span>(<span class="st">&quot;CI&quot;</span>, conf_level, <span class="st">&quot;% for </span><span class="sc">\\</span><span class="st">(I_r</span><span class="sc">\\</span><span class="st">)&quot;</span>), </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Burden&quot;</span>, <span class="fu">paste0</span>(<span class="st">&quot;CI&quot;</span>, conf_level, <span class="st">&quot;% for </span><span class="sc">\\</span><span class="st">(I_{br}</span><span class="sc">\\</span><span class="st">)&quot;</span>)))</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Incidence
+</th>
+<th style="text-align:left;">
+CI% for <span class="math inline">\(I_r\)</span>
+</th>
+<th style="text-align:right;">
+Burden
+</th>
+<th style="text-align:left;">
+CI% for <span class="math inline">\(I_{br}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+TOTAL
+</td>
+<td style="text-align:right;">
+9.88
+</td>
+<td style="text-align:left;">
+[8.1, 11.7]
+</td>
+<td style="text-align:right;">
+246.9
+</td>
+<td style="text-align:left;">
+[237.9, 255.9]
+</td>
+</tr>
+</tbody>
+</table>
+<p>Players with the highest injury incidence rate (all type of injuries)
+were Adam Lallana and Daniel Sturridge with 77.1 and 29.1 injuries per
+100 player-matches respectively. The teams overall injury incidence was
+of 9.9 injuries per 100 player-matches and the injury burden of 246.9
+days lost per 100 player-matches.</p>
+<p>These summaries can be done by injury type:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>injstats_pertype <span class="ot">&lt;-</span> <span class="fu">injsummary</span>(injd, <span class="at">var_type_injury =</span> <span class="st">&quot;injury_type&quot;</span>, <span class="at">quiet =</span> T)</span></code></pre></div>
+<p>These are the teams results regarding injury incidence and injury
+burden according to injury type:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>injstats_pertype[[<span class="st">&quot;overall&quot;</span>]] <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">11</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ninjuries2 =</span> <span class="fu">paste0</span>(ninjuries, <span class="st">&quot; (&quot;</span>, percent_ninjuries, <span class="st">&quot;)&quot;</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">ndayslost2 =</span> <span class="fu">paste0</span>(ndayslost, <span class="st">&quot; (&quot;</span>, percent_dayslost, <span class="st">&quot;)&quot;</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">median_dayslost2 =</span> <span class="fu">paste0</span>(median_dayslost, <span class="st">&quot; (&quot;</span>, iqr_dayslost, <span class="st">&quot;)&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">13</span>, <span class="dv">8</span><span class="sc">:</span><span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(injburden)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Type of injury&quot;</span>, <span class="st">&quot;N injuries (%)&quot;</span>, <span class="st">&quot;N days lost (%)&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Median days lost (IQR)&quot;</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Total exposure&quot;</span>, <span class="st">&quot;Incidence&quot;</span>, <span class="st">&quot;Burden&quot;</span>),</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">row.names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Type of injury
+</th>
+<th style="text-align:left;">
+N injuries (%)
+</th>
+<th style="text-align:left;">
+N days lost (%)
+</th>
+<th style="text-align:left;">
+Median days lost (IQR)
+</th>
+<th style="text-align:right;">
+Total exposure
+</th>
+<th style="text-align:right;">
+Incidence
+</th>
+<th style="text-align:right;">
+Burden
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Muscle
+</td>
+<td style="text-align:left;">
+25 (30.49)
+</td>
+<td style="text-align:left;">
+735 (35.87)
+</td>
+<td style="text-align:left;">
+21 (12-36)
+</td>
+<td style="text-align:right;">
+67266
+</td>
+<td style="text-align:right;">
+3.34
+</td>
+<td style="text-align:right;">
+98.34
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+Ligament
+</td>
+<td style="text-align:left;">
+9 (10.98)
+</td>
+<td style="text-align:left;">
+596 (29.09)
+</td>
+<td style="text-align:left;">
+28 (7-54)
+</td>
+<td style="text-align:right;">
+67266
+</td>
+<td style="text-align:right;">
+1.20
+</td>
+<td style="text-align:right;">
+79.74
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+21 (25.61)
+</td>
+<td style="text-align:left;">
+332 (16.2)
+</td>
+<td style="text-align:left;">
+7 (4-18)
+</td>
+<td style="text-align:right;">
+67266
+</td>
+<td style="text-align:right;">
+2.81
+</td>
+<td style="text-align:right;">
+44.42
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+Concussion
+</td>
+<td style="text-align:left;">
+16 (19.51)
+</td>
+<td style="text-align:left;">
+213 (10.4)
+</td>
+<td style="text-align:left;">
+10.5 (5.75-14.5)
+</td>
+<td style="text-align:right;">
+67266
+</td>
+<td style="text-align:right;">
+2.14
+</td>
+<td style="text-align:right;">
+28.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+Bone
+</td>
+<td style="text-align:left;">
+11 (13.41)
+</td>
+<td style="text-align:left;">
+173 (8.44)
+</td>
+<td style="text-align:left;">
+9 (4.5-16.5)
+</td>
+<td style="text-align:right;">
+67266
+</td>
+<td style="text-align:right;">
+1.47
+</td>
+<td style="text-align:right;">
+23.15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="injprev" class="section level2">
+<h2>- <code>injprev()</code></h2>
+<details>
+<summary>
+Prepare data
+</summary>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df_exposures <span class="ot">&lt;-</span> <span class="fu">prepare_exp</span>(raw_df_exposures, <span class="at">player =</span> <span class="st">&quot;player_name&quot;</span>,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">date =</span> <span class="st">&quot;year&quot;</span>, <span class="at">time_expo =</span> <span class="st">&quot;minutes_played&quot;</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>df_injuries  <span class="ot">&lt;-</span> <span class="fu">prepare_inj</span>(raw_df_injuries, <span class="at">player =</span> <span class="st">&quot;player_name&quot;</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">date_injured =</span> <span class="st">&quot;from&quot;</span>, <span class="at">date_recovered =</span> <span class="st">&quot;until&quot;</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>injd         <span class="ot">&lt;-</span> <span class="fu">prepare_all</span>(<span class="at">data_exposures =</span> df_exposures,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data_injuries  =</span> df_injuries,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">exp_unit =</span> <span class="st">&quot;matches_minutes&quot;</span>)</span></code></pre></div>
+</details>
+<p>We calculate the injury prevalence and the proportions of injury-free
+players on a season basis:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>availability_table1 <span class="ot">&lt;-</span> <span class="fu">injprev</span>(injd, <span class="at">by =</span> <span class="st">&quot;season&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>availability_table1</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 5</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   season           type_injury     n n_player  prop</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;            &lt;fct&gt;       &lt;int&gt;    &lt;int&gt; &lt;dbl&gt;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 season 2017/2018 Available       7       23  30.4</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 season 2017/2018 Injured        16       23  69.6</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 season 2018/2019 Available       2       19  10.5</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 season 2018/2019 Injured        17       19  89.5</span></span></code></pre></div>
+<p>Making use of <code>knitr::kable()</code>:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(availability_table1,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Season&quot;</span>, <span class="st">&quot;Availability&quot;</span>, <span class="st">&quot;N&quot;</span>, <span class="st">&quot;Total&quot;</span>, <span class="st">&quot;%&quot;</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Season
+</th>
+<th style="text-align:left;">
+Availability
+</th>
+<th style="text-align:right;">
+N
+</th>
+<th style="text-align:right;">
+Total
+</th>
+<th style="text-align:right;">
+%
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+season 2017/2018
+</td>
+<td style="text-align:left;">
+Available
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+30.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2017/2018
+</td>
+<td style="text-align:left;">
+Injured
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+69.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2018/2019
+</td>
+<td style="text-align:left;">
+Available
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+10.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2018/2019
+</td>
+<td style="text-align:left;">
+Injured
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+89.5
+</td>
+</tr>
+</tbody>
+</table>
+<p>Overall, there were more injured players in the 18-19 season than in
+the previous season. Let’s calculate it monthly:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>availability_table2 <span class="ot">&lt;-</span> <span class="fu">injprev</span>(injd, <span class="at">by =</span> <span class="st">&quot;monthly&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="do">## compare two seasons July and August</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>availability_table2 <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(season) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 6</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Groups:   season [2]</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   season           month type_injury     n n_player  prop</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;            &lt;fct&gt; &lt;fct&gt;       &lt;int&gt;    &lt;int&gt; &lt;dbl&gt;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 season 2017/2018 Jul   Available      21       23  91.3</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 season 2017/2018 Jul   Injured         2       23   8.7</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 season 2017/2018 Aug   Available      18       23  78.3</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 season 2017/2018 Aug   Injured         5       23  21.7</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 season 2018/2019 Jul   Available      16       19  84.2</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 season 2018/2019 Jul   Injured         3       19  15.8</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7 season 2018/2019 Aug   Available      15       19  78.9</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8 season 2018/2019 Aug   Injured         4       19  21.1</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="do">## compare two seasons January and February</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>availability_table2 <span class="sc">%&gt;%</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(season) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">13</span><span class="sc">:</span><span class="dv">16</span>)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 6</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Groups:   season [2]</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   season           month type_injury     n n_player  prop</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;            &lt;fct&gt; &lt;fct&gt;       &lt;int&gt;    &lt;int&gt; &lt;dbl&gt;</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 season 2017/2018 Jan   Available      18       23  78.3</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 season 2017/2018 Jan   Injured         5       23  21.7</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 season 2017/2018 Feb   Available      21       23  91.3</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 season 2017/2018 Feb   Injured         2       23   8.7</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 season 2018/2019 Jan   Available       9       19  47.4</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 season 2018/2019 Jan   Injured        10       19  52.6</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7 season 2018/2019 Feb   Available      12       19  63.2</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8 season 2018/2019 Feb   Injured         7       19  36.8</span></span></code></pre></div>
+<p>Looking at monthly basis, there were more differences w.r.t. player
+availability in Liverpool FC 1st male team, during the winter
+January/February months. More injured players in the 18-19 season.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>availability_table3 <span class="ot">&lt;-</span> <span class="fu">injprev</span>(injd, <span class="at">by =</span> <span class="st">&quot;monthly&quot;</span>, <span class="at">var_type_injury =</span> <span class="st">&quot;injury_type&quot;</span>)</span></code></pre></div>
+<p>Tidy up:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="do">## season 1</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>availability_table3 <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(season <span class="sc">==</span> <span class="st">&quot;season 2017/2018&quot;</span>, month <span class="sc">==</span> <span class="st">&quot;Jan&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Season&quot;</span>, <span class="st">&quot;Month&quot;</span>, <span class="st">&quot;Availability&quot;</span>, <span class="st">&quot;N&quot;</span>, <span class="st">&quot;Total&quot;</span>, <span class="st">&quot;%&quot;</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">&quot;Season 2017/2018&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">position =</span> <span class="st">&quot;float_left&quot;</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="do">## season 2</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>availability_table3 <span class="sc">%&gt;%</span> </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(season <span class="sc">==</span> <span class="st">&quot;season 2018/2019&quot;</span>, month <span class="sc">==</span> <span class="st">&quot;Jan&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Season&quot;</span>, <span class="st">&quot;Month&quot;</span>, <span class="st">&quot;Availability&quot;</span>, <span class="st">&quot;N&quot;</span>, <span class="st">&quot;Total&quot;</span>, <span class="st">&quot;%&quot;</span>),</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">&quot;Season 2018/2019&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">position =</span> <span class="st">&quot;left&quot;</span>)</span></code></pre></div>
+<table class="table" style="width: auto !important; ">
+<caption>
+Season 2017/2018
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Season
+</th>
+<th style="text-align:left;">
+Month
+</th>
+<th style="text-align:left;">
+Availability
+</th>
+<th style="text-align:right;">
+N
+</th>
+<th style="text-align:right;">
+Total
+</th>
+<th style="text-align:right;">
+%
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+season 2017/2018
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:left;">
+Available
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+78.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2017/2018
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:left;">
+Ligament
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+4.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2017/2018
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:left;">
+Muscle
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+13.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2017/2018
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+4.3
+</td>
+</tr>
+</tbody>
+</table>
+<table class="table" style="width: auto !important; ">
+<caption>
+Season 2018/2019
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Season
+</th>
+<th style="text-align:left;">
+Month
+</th>
+<th style="text-align:left;">
+Availability
+</th>
+<th style="text-align:right;">
+N
+</th>
+<th style="text-align:right;">
+Total
+</th>
+<th style="text-align:right;">
+%
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+season 2018/2019
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:left;">
+Available
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+47.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2018/2019
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:left;">
+Bone
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+5.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2018/2019
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:left;">
+Concussion
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+10.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2018/2019
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:left;">
+Ligament
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+5.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2018/2019
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:left;">
+Muscle
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+15.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+season 2018/2019
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+21.1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="further-implementation" class="section level1">
+<h1>Further implementation</h1>
+<p>In the near future there will be available the negative binomial
+(<code>method = &quot;negbin&quot;</code> argument), zero-inflated poisson
+(“<code>zinfpois</code>”) and zero-inflated negative binomial
+(<code>&quot;zinfnb&quot;</code>) methods in <code>injsummary()</code>
+function.</p>
+<p>Finally, this document shows how to perform descriptive analyses for
+injury epidemiology, but naturally, following these analyses further
+statistical inferences or multivariate regression analyses may be chosen
+to infer about the player’s/athletes population properties (e.g. to test
+whether there are differences between the injury incidence rates of two
+cohorts) or to evaluate the influence of independent factors
+(e.g. previous injuries, workload) on the injuries occurred.</p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Bahr2018" class="csl-entry">
+Bahr, R, B Clarsen, and J Ekstrand. 2018. <span>“Why We Should Focus on
+the Burden of Injuries and Illnesses, Not Just Their Incidence.”</span>
+<em>British Journal of Sports Medicine</em> 52 (16): 1018–21. <a href="https://doi.org/10.1136/bjsports-2017-098160">https://doi.org/10.1136/bjsports-2017-098160</a>.
+</div>
+<div id="ref-Bahr2003" class="csl-entry">
+Bahr, R, and I Holme. 2003. <span>“Risk Factors for Sports Injuries—a
+Methodological Approach.”</span> <em>British Journal of Sports
+Medicine</em> 37 (5): 384–92. <a href="https://doi.org/10.1136/bjsm.37.5.384">https://doi.org/10.1136/bjsm.37.5.384</a>.
+</div>
+<div id="ref-Hodgson2000" class="csl-entry">
+Hodgson Phillips, L. 2000. <span>“Sports Injury Incidence.”</span>
+<em>British Journal of Sports Medicine</em> 34 (2): 133–36. <a href="https://doi.org/10.1136/bjsm.34.2.133">https://doi.org/10.1136/bjsm.34.2.133</a>.
+</div>
+<div id="ref-walden2023" class="csl-entry">
+Waldén, Markus, Margo Mountjoy, Alan McCall, Andreas Serner, Andrew
+Massey, Johannes L Tol, Roald Bahr, et al. 2023.
+<span>“Football-Specific Extension of the IOC Consensus Statement:
+Methods for Recording and Reporting of Epidemiological Data on Injury
+and Illness in Sport 2020.”</span> <em>British Journal of Sports
+Medicine</em>. <a href="https://doi.org/10.1136/bjsports-2022-106405">https://doi.org/10.1136/bjsports-2022-106405</a>.
+</div>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>These data sets are provided for illustrative purposes.
+We warn that they might not be accurate, there might be a mismatch and
+non-completeness with what actually occurred.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Something that it is important to be aware of.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
