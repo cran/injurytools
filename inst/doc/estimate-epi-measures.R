@@ -118,55 +118,55 @@ injstats_pertype[["overall"]] %>%
 #                              exp_unit = "matches_minutes")
 
 ## -----------------------------------------------------------------------------
-availability_table1 <- injprev(injd, by = "season")
-availability_table1
+prev_table1 <- injprev(injd, by = "season")
+prev_table1
 
 ## -----------------------------------------------------------------------------
-kable(availability_table1,
-      col.names = c("Season", "Availability", "N", "Total", "%"))
+kable(prev_table1,
+      col.names = c("Season", "Status", "N", "Total", "%"))
 
 ## -----------------------------------------------------------------------------
-availability_table2 <- injprev(injd, by = "monthly")
+prev_table2 <- injprev(injd, by = "monthly")
 
 ## compare two seasons July and August
-availability_table2 %>%
+prev_table2 %>%
   group_by(season) %>% 
   slice(1:4)
 
 
 ## compare two seasons January and February
-availability_table2 %>%
+prev_table2 %>%
   group_by(season) %>% 
   slice(13:16)
 
 ## -----------------------------------------------------------------------------
-availability_table3 <- injprev(injd, by = "monthly", var_type_injury = "injury_type")
+prev_table3 <- injprev(injd, by = "monthly", var_type_injury = "injury_type")
 
 ## ---- results = "hide", eval = F----------------------------------------------
 #  ## season 1
-#  availability_table3 %>%
+#  prev_table3 %>%
 #    filter(season == "season 2017/2018", month == "Jan") %>%
-#    kable(col.names = c("Season", "Month", "Availability", "N", "Total", "%"),
+#    kable(col.names = c("Season", "Month", "Status", "N", "Total", "%"),
 #          caption = "Season 2017/2018") %>%
 #    kable_styling(full_width = FALSE, position = "float_left")
 #  ## season 2
-#  availability_table3 %>%
+#  prev_table3 %>%
 #    filter(season == "season 2018/2019", month == "Jan") %>%
-#    kable(col.names = c("Season", "Month", "Availability", "N", "Total", "%"),
+#    kable(col.names = c("Season", "Month", "Status", "N", "Total", "%"),
 #          caption = "Season 2018/2019") %>%
 #    kable_styling(full_width = FALSE, position = "left")
 
 ## ---- echo = F----------------------------------------------------------------
 ## season 1
-availability_table3 %>% 
+prev_table3 %>% 
   filter(season == "season 2017/2018", month == "Jan") %>% 
-  kable(col.names = c("Season", "Month", "Availability", "N", "Total", "%"),
+  kable(col.names = c("Season", "Month", "Status", "N", "Total", "%"),
         caption = "Season 2017/2018") %>% 
   kable_styling(full_width = FALSE, position = "left")
 ## season 2
-availability_table3 %>% 
+prev_table3 %>% 
   filter(season == "season 2018/2019", month == "Jan") %>% 
-  kable(col.names = c("Season", "Month", "Availability", "N", "Total", "%"),
+  kable(col.names = c("Season", "Month", "Status", "N", "Total", "%"),
         caption = "Season 2018/2019") %>% 
   kable_styling(full_width = FALSE, position = "left")
 

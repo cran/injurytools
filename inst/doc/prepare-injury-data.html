@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-<meta name="date" content="2023-01-25" />
+<meta name="date" content="2023-02-01" />
 
 <title>Prepare Sports Injury Data</title>
 
@@ -338,7 +338,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">Prepare Sports Injury Data</h1>
-<h4 class="date">2023-01-25</h4>
+<h4 class="date">2023-02-01</h4>
 
 
 
@@ -392,20 +392,20 @@ consecutive seasons, 2017-2018 and 2018-2019, scrapped from <a href="https://www
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 alex-oxlade-chamberlain    143424  17/18 2017             32           1483</span></span>
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5                 alisson    105470  18/19 2018             38           3420</span></span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6        andrew-robertson    234803  17/18 2017             22           1943</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      liga    club_name club_id age            place                   position</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 premier fc-liverpool      31  29      St Albans   Midfield_AttackingMidfield</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 premier fc-liverpool      31  30      St Albans   Midfield_AttackingMidfield</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 premier fc-liverpool      31  25        Sevilla            Defender_LeftBack</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 premier fc-liverpool      31  24     Portsmouth     Midfield_CentralMidfield</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 premier fc-liverpool      31  26  Novo Hamburgo                   Goalkeeper</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 premier fc-liverpool      31  23        Glasgow            Defender_LeftBack</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    foot goals assists reds</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  both     0       0    0</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  both     0       0    0</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  left     0       0    0</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 right     3       7    0</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 right     0       0    0</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  left     1       5    0</span></span></code></pre></div>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      liga    club_name club_id age place                   position  foot goals</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 premier fc-liverpool      31  29  &lt;NA&gt; Midfield_AttackingMidfield  both     0</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 premier fc-liverpool      31  30  &lt;NA&gt; Midfield_AttackingMidfield  both     0</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 premier fc-liverpool      31  25  &lt;NA&gt;          Defender_LeftBack  left     0</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 premier fc-liverpool      31  24  &lt;NA&gt;   Midfield_CentralMidfield right     3</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 premier fc-liverpool      31  26  &lt;NA&gt;                 Goalkeeper right     0</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 premier fc-liverpool      31  23  &lt;NA&gt;          Defender_LeftBack  left     1</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   assists reds</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1       0    0</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2       0    0</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3       0    0</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       7    0</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5       0    0</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6       5    0</span></span></code></pre></div>
 <p>We standardize the <strong>key column names</strong> such as: player
 (subject) identifier, dates of injury and recovery (if any),
 training/match/season date and amount of time of exposure. And set them

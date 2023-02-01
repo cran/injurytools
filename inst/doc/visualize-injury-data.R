@@ -218,25 +218,25 @@ p22 <- gg_injbarplot(injds2, type = "burden")
 #  
 #  p11 <- p11 +
 #    xlab("Injury incidence") +
-#    ylab("Playerwise incidence (injuries per 100 player-match)") +
+#    ylab("Player-wise incidence (injuries per 100 player-match)") +
 #    ggtitle("2017/2018 season") +
 #    scale_y_continuous(limits = c(0, 80)) + ## same x axis
 #    theme2 +
 #    theme(plot.margin = margin(0.2, 0.2, 0.2, 0.5, "cm"))
 #  p12 <- p12 +
 #    xlab("Injury burden") +
-#    ylab("Playerwise burden (days lost per 100 player-match)") +
+#    ylab("Player-wise burden (days lost per 100 player-match)") +
 #    scale_y_continuous(limits = c(0, 6110)) +
 #    theme2 +
 #    theme(plot.margin = margin(0.2, 0.2, 0.2, 0.65, "cm"))
 #  
 #  p21 <- p21 +
-#    ylab("Playerwise incidence (injuries per 100 player-match)") +
+#    ylab("Player-wise incidence (injuries per 100 player-match)") +
 #    ggtitle("2018/2019 season") +
 #    scale_y_continuous(limits = c(0, 80)) +
 #    theme2
 #  p22 <-p22 +
-#    ylab("Playerwise burden (days lost per 100 player-match)") +
+#    ylab("Player-wise burden (days lost per 100 player-match)") +
 #    scale_y_continuous(limits = c(0, 6110)) +
 #    theme2
 #  
@@ -251,25 +251,25 @@ theme2 <- theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 26)
 
 p11 <- p11 + 
   xlab("Injury incidence") + 
-  ylab("Playerwise incidence (injuries per 100 player-match)") +
+  ylab("Player-wise incidence (injuries per 100 player-match)") +
   ggtitle("2017/2018 season") +
   scale_y_continuous(limits = c(0, 80)) + ## same x axis 
   theme2 +
   theme(plot.margin = margin(0.2, 0.2, 0.2, 0.5, "cm"))
 p12 <- p12 +
   xlab("Injury burden") + 
-  ylab("Playerwise burden (days lost per 100 player-match)") +
+  ylab("Player-wise burden (days lost per 100 player-match)") +
   scale_y_continuous(limits = c(0, 6110)) + 
   theme2 +
   theme(plot.margin = margin(0.2, 0.2, 0.2, 0.65, "cm"))
 
 p21 <- p21 + 
-  ylab("Playerwise incidence (injuries per 100 player-match)") +
+  ylab("Player-wise incidence (injuries per 100 player-match)") +
   ggtitle("2018/2019 season") +
   scale_y_continuous(limits = c(0, 80)) + 
   theme2 
 p22 <-p22 +
-  ylab("Playerwise burden (days lost per 100 player-match)") +
+  ylab("Player-wise burden (days lost per 100 player-match)") +
   scale_y_continuous(limits = c(0, 6110)) + 
   theme2
 
