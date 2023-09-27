@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-<meta name="date" content="2023-02-01" />
+<meta name="date" content="2023-09-27" />
 
 <title>Prepare Sports Injury Data</title>
 
@@ -338,12 +338,12 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">Prepare Sports Injury Data</h1>
-<h4 class="date">2023-02-01</h4>
+<h4 class="date">2023-09-27</h4>
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(injurytools)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(injurytools)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
 <p>Data preprocessing is the very first step one has to follow, every
 time one wants to analyze sports injury data using
 <code>injurytools</code> <strong>R</strong> package.</p>
@@ -371,54 +371,53 @@ and <a href="https://lzumeta.github.io/injurytools/reference/raw_df_exposures.ht
 data sets available from the <code>injurytools</code> package. These are
 data of Liverpool Football Club male’s first team players over two
 consecutive seasons, 2017-2018 and 2018-2019, scrapped from <a href="https://www.transfermarkt.com/" class="uri">https://www.transfermarkt.com/</a> website:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_df_injuries)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 11</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   player_n…¹ playe…² season from       until      days_…³ games…⁴ injury injur…⁵</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;      &lt;fct&gt;   &lt;fct&gt;  &lt;date&gt;     &lt;date&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;fct&gt;  </span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 adam-lall… 43530   17/18  2017-07-31 2017-11-25     117      21 Hamst… NO_ACL </span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 adam-lall… 43530   17/18  2018-03-31 2018-05-13      43      11 Hamst… NO_ACL </span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 adam-lall… 43530   18/19  2018-09-04 2018-10-19      45       7 Groin… NO_ACL </span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 adam-lall… 43530   18/19  2018-11-09 2018-12-04      25       4 Knock  NO_ACL </span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 adam-lall… 43530   18/19  2019-01-06 2019-01-18      12       2 Knock  NO_ACL </span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 adam-lall… 43530   18/19  2019-04-01 2019-05-31      60      10 Knock  NO_ACL </span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 2 more variables: injury_type &lt;fct&gt;, injury_severity &lt;fct&gt;, and</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   abbreviated variable names ¹​player_name, ²​player_id, ³​days_lost,</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   ⁴​games_lost, ⁵​injury_acl</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_df_exposures)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               player_name player_id season year matches_played minutes_played</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1            adam-lallana     43530  17/18 2017             12            236</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2            adam-lallana     43530  18/19 2018             13            464</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3          alberto-moreno    207917  17/18 2017             16           1264</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 alex-oxlade-chamberlain    143424  17/18 2017             32           1483</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5                 alisson    105470  18/19 2018             38           3420</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6        andrew-robertson    234803  17/18 2017             22           1943</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      liga    club_name club_id age place                   position  foot goals</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 premier fc-liverpool      31  29  &lt;NA&gt; Midfield_AttackingMidfield  both     0</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 premier fc-liverpool      31  30  &lt;NA&gt; Midfield_AttackingMidfield  both     0</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 premier fc-liverpool      31  25  &lt;NA&gt;          Defender_LeftBack  left     0</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 premier fc-liverpool      31  24  &lt;NA&gt;   Midfield_CentralMidfield right     3</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 premier fc-liverpool      31  26  &lt;NA&gt;                 Goalkeeper right     0</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 premier fc-liverpool      31  23  &lt;NA&gt;          Defender_LeftBack  left     1</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   assists reds</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1       0    0</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2       0    0</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3       0    0</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       7    0</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5       0    0</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6       5    0</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">head</span>(raw_df_injuries)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 11</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt;   player_name player_id season from       until      days_lost games_lost injury</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;       &lt;fct&gt;     &lt;fct&gt;  &lt;date&gt;     &lt;date&gt;         &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt; </span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; 1 adam-lalla… 43530     17/18  2017-07-31 2017-11-25       117         21 Hamst…</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; 2 adam-lalla… 43530     17/18  2018-03-31 2018-05-13        43         11 Hamst…</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; 3 adam-lalla… 43530     18/19  2018-09-04 2018-10-19        45          7 Groin…</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; 4 adam-lalla… 43530     18/19  2018-11-09 2018-12-04        25          4 Knock </span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; 5 adam-lalla… 43530     18/19  2019-01-06 2019-01-18        12          2 Knock </span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; 6 adam-lalla… 43530     18/19  2019-04-01 2019-05-31        60         10 Knock </span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; # ℹ 3 more variables: injury_acl &lt;fct&gt;, injury_type &lt;fct&gt;,</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; #   injury_severity &lt;fct&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="fu">head</span>(raw_df_exposures)</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt;               player_name player_id season year matches_played minutes_played</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; 1            adam-lallana     43530  17/18 2017             12            236</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; 2            adam-lallana     43530  18/19 2018             13            464</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; 3          alberto-moreno    207917  17/18 2017             16           1264</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; 4 alex-oxlade-chamberlain    143424  17/18 2017             32           1483</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; 5                 alisson    105470  18/19 2018             38           3420</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt; 6        andrew-robertson    234803  17/18 2017             22           1943</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt;      liga    club_name club_id age height place citizenship</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt; 1 premier fc-liverpool      31  29   1.72  &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; 2 premier fc-liverpool      31  30   1.72  &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt; 3 premier fc-liverpool      31  25   1.71  &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt; 4 premier fc-liverpool      31  24   1.75  &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt; 5 premier fc-liverpool      31  26   1.91  &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; 6 premier fc-liverpool      31  23   1.78  &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt;                     position  foot goals assists yellows reds</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; 1 Midfield_AttackingMidfield  both     0       0       1    0</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt; 2 Midfield_AttackingMidfield  both     0       0       1    0</span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt; 3          Defender_LeftBack  left     0       0       1    0</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt; 4   Midfield_CentralMidfield right     3       7       3    0</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt; 5                 Goalkeeper right     0       0       1    0</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt; 6          Defender_LeftBack  left     1       5       2    0</span></span></code></pre></div>
 <p>We standardize the <strong>key column names</strong> such as: player
 (subject) identifier, dates of injury and recovery (if any),
 training/match/season date and amount of time of exposure. And set them
 proper names and formats by means of <code>prepare_inj()</code> and
 <code>prepare_exp()</code><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_injuries <span class="ot">&lt;-</span> <span class="fu">prepare_inj</span>(<span class="at">df_injuries0   =</span> raw_df_injuries,</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">player         =</span> <span class="st">&quot;player_name&quot;</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">date_injured   =</span> <span class="st">&quot;from&quot;</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">date_recovered =</span> <span class="st">&quot;until&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df_exposures <span class="ot">&lt;-</span> <span class="fu">prepare_exp</span>(<span class="at">df_exposures0 =</span> raw_df_exposures,</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">player        =</span> <span class="st">&quot;player_name&quot;</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">date          =</span> <span class="st">&quot;year&quot;</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">time_expo     =</span> <span class="st">&quot;minutes_played&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>df_injuries <span class="ot">&lt;-</span> <span class="fu">prepare_inj</span>(<span class="at">df_injuries0   =</span> raw_df_injuries,</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                           <span class="at">player         =</span> <span class="st">&quot;player_name&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                           <span class="at">date_injured   =</span> <span class="st">&quot;from&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>                           <span class="at">date_recovered =</span> <span class="st">&quot;until&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>df_exposures <span class="ot">&lt;-</span> <span class="fu">prepare_exp</span>(<span class="at">df_exposures0 =</span> raw_df_exposures,</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>                            <span class="at">player        =</span> <span class="st">&quot;player_name&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>                            <span class="at">date          =</span> <span class="st">&quot;year&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>                            <span class="at">time_expo     =</span> <span class="st">&quot;minutes_played&quot;</span>)</span></code></pre></div>
 <p>We suggest collecting exposure time on as fine scale as possible,
 i.e. <strong>minutes</strong> would be the desired unit as the total
 time spent training and participating in competitions/matches. However,
@@ -427,33 +426,31 @@ if the units are “seasons”, then do:</p>
 <summary>
 See the R-code
 </summary>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## a possible way for the case where each row in exposure data correspond to a</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## season and there is no more information about time of exposure</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>raw_df_exposures<span class="sc">$</span>time_expo_aux <span class="ot">&lt;-</span> <span class="dv">1</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df_exposures2 <span class="ot">&lt;-</span> <span class="fu">prepare_exp</span>(<span class="at">df_exposures0 =</span> raw_df_exposures,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                             <span class="at">player        =</span> <span class="st">&quot;player_name&quot;</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                             <span class="at">date          =</span> <span class="st">&quot;year&quot;</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                             <span class="at">time_expo     =</span> <span class="st">&quot;time_expo_aux&quot;</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="do">## note &#39;tstart_s&#39; and &#39;tstop_s&#39; columns</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>injd <span class="ot">&lt;-</span>  <span class="fu">prepare_all</span>(<span class="at">data_exposures =</span> df_exposures2,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data_injuries  =</span> df_injuries,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">exp_unit =</span> <span class="st">&quot;seasons&quot;</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(injd)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 19</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   player       t0         tf         date_inj…¹ date_rec…² tstart     tstop     </span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;        &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;date&gt;    </span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 adam-lallana 2017-07-01 2019-06-30 2017-07-31 2017-11-25 2017-07-01 2017-07-31</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 adam-lallana 2017-07-01 2019-06-30 2018-03-31 2018-05-13 2017-11-25 2018-03-31</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 adam-lallana 2017-07-01 2019-06-30 2018-09-04 2018-10-19 2018-05-13 2018-09-04</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 adam-lallana 2017-07-01 2019-06-30 2018-11-09 2018-12-04 2018-10-19 2018-11-09</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 adam-lallana 2017-07-01 2019-06-30 2019-01-06 2019-01-18 2018-12-04 2019-01-06</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 adam-lallana 2017-07-01 2019-06-30 2019-04-01 2019-05-31 2019-01-18 2019-04-01</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 12 more variables: tstart_s &lt;dbl&gt;, tstop_s &lt;dbl&gt;, status &lt;dbl&gt;,</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   enum &lt;dbl&gt;, days_lost &lt;dbl&gt;, player_id &lt;fct&gt;, season &lt;fct&gt;,</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   games_lost &lt;dbl&gt;, injury &lt;chr&gt;, injury_acl &lt;fct&gt;, injury_type &lt;fct&gt;,</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   injury_severity &lt;fct&gt;, and abbreviated variable names ¹​date_injured,</span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   ²​date_recovered</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">## a possible way for the case where each row in exposure data correspond to a</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="do">## season and there is no more information about time of exposure</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>raw_df_exposures<span class="sc">$</span>time_expo_aux <span class="ot">&lt;-</span> <span class="dv">1</span> </span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>df_exposures2 <span class="ot">&lt;-</span> <span class="fu">prepare_exp</span>(<span class="at">df_exposures0 =</span> raw_df_exposures,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>                             <span class="at">player        =</span> <span class="st">&quot;player_name&quot;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>                             <span class="at">date          =</span> <span class="st">&quot;year&quot;</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>                             <span class="at">time_expo     =</span> <span class="st">&quot;time_expo_aux&quot;</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="do">## note &#39;tstart_s&#39; and &#39;tstop_s&#39; columns</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>injd <span class="ot">&lt;-</span>  <span class="fu">prepare_all</span>(<span class="at">data_exposures =</span> df_exposures2,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>                     <span class="at">data_injuries  =</span> df_injuries,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>                     <span class="at">exp_unit =</span> <span class="st">&quot;seasons&quot;</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="fu">head</span>(injd)</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 19</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt;   player t0         tf         date_injured date_recovered tstart     tstop     </span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;  &lt;date&gt;     &lt;date&gt;     &lt;date&gt;       &lt;date&gt;         &lt;date&gt;     &lt;date&gt;    </span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; 1 adam-… 2017-07-01 2019-06-30 2017-07-31   2017-11-25     2017-07-01 2017-07-31</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; 2 adam-… 2017-07-01 2019-06-30 2018-03-31   2018-05-13     2017-11-25 2018-03-31</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; 3 adam-… 2017-07-01 2019-06-30 2018-09-04   2018-10-19     2018-05-13 2018-09-04</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; 4 adam-… 2017-07-01 2019-06-30 2018-11-09   2018-12-04     2018-10-19 2018-11-09</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; 5 adam-… 2017-07-01 2019-06-30 2019-01-06   2019-01-18     2018-12-04 2019-01-06</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; 6 adam-… 2017-07-01 2019-06-30 2019-04-01   2019-05-31     2019-01-18 2019-04-01</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; # ℹ 12 more variables: tstart_s &lt;dbl&gt;, tstop_s &lt;dbl&gt;, status &lt;dbl&gt;, enum &lt;dbl&gt;,</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt; #   days_lost &lt;dbl&gt;, player_id &lt;fct&gt;, season &lt;fct&gt;, games_lost &lt;dbl&gt;,</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt; #   injury &lt;chr&gt;, injury_acl &lt;fct&gt;, injury_type &lt;fct&gt;, injury_severity &lt;fct&gt;</span></span></code></pre></div>
 </details>
 </div>
 <div id="integrate-both-sources-of-data" class="section level1">
@@ -463,30 +460,29 @@ above. It is important to specify the unit of exposure,
 <code>exp_unit</code> argument, that must be one of “minutes”, “hours”,
 “days”, “matches_num”, “matches_minutes”, “activity_days” or
 “seasons”.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>injd <span class="ot">&lt;-</span>  <span class="fu">prepare_all</span>(<span class="at">data_exposures =</span> df_exposures,</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data_injuries  =</span> df_injuries,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">exp_unit =</span> <span class="st">&quot;matches_minutes&quot;</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(injd)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 19</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   player       t0         tf         date_inj…¹ date_rec…² tstart     tstop     </span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;        &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;date&gt;    </span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 adam-lallana 2017-07-01 2019-06-30 2017-07-31 2017-11-25 2017-07-01 2017-07-31</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 adam-lallana 2017-07-01 2019-06-30 2018-03-31 2018-05-13 2017-11-25 2018-03-31</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 adam-lallana 2017-07-01 2019-06-30 2018-09-04 2018-10-19 2018-05-13 2018-09-04</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 adam-lallana 2017-07-01 2019-06-30 2018-11-09 2018-12-04 2018-10-19 2018-11-09</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 adam-lallana 2017-07-01 2019-06-30 2019-01-06 2019-01-18 2018-12-04 2019-01-06</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 adam-lallana 2017-07-01 2019-06-30 2019-04-01 2019-05-31 2019-01-18 2019-04-01</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 12 more variables: tstart_minPlay &lt;dbl&gt;, tstop_minPlay &lt;dbl&gt;,</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   status &lt;dbl&gt;, enum &lt;dbl&gt;, days_lost &lt;dbl&gt;, player_id &lt;fct&gt;, season &lt;fct&gt;,</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   games_lost &lt;dbl&gt;, injury &lt;chr&gt;, injury_acl &lt;fct&gt;, injury_type &lt;fct&gt;,</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   injury_severity &lt;fct&gt;, and abbreviated variable names ¹​date_injured,</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   ²​date_recovered</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># injd %&gt;% </span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">#   group_by(player) %&gt;% </span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co">#   slice(1, n())</span></span></code></pre></div>
-<p>The outcome is a prepared data set, structured in an suitable way
-that is ready for its use by statistical modelling approaches. This data
-set will always have the columns listed below (standardized columns or
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>injd <span class="ot">&lt;-</span>  <span class="fu">prepare_all</span>(<span class="at">data_exposures =</span> df_exposures,</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>                    <span class="at">data_injuries  =</span> df_injuries,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>                    <span class="at">exp_unit =</span> <span class="st">&quot;matches_minutes&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="fu">head</span>(injd)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 19</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;   player t0         tf         date_injured date_recovered tstart     tstop     </span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;  &lt;date&gt;     &lt;date&gt;     &lt;date&gt;       &lt;date&gt;         &lt;date&gt;     &lt;date&gt;    </span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; 1 adam-… 2017-07-01 2019-06-30 2017-07-31   2017-11-25     2017-07-01 2017-07-31</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; 2 adam-… 2017-07-01 2019-06-30 2018-03-31   2018-05-13     2017-11-25 2018-03-31</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; 3 adam-… 2017-07-01 2019-06-30 2018-09-04   2018-10-19     2018-05-13 2018-09-04</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; 4 adam-… 2017-07-01 2019-06-30 2018-11-09   2018-12-04     2018-10-19 2018-11-09</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; 5 adam-… 2017-07-01 2019-06-30 2019-01-06   2019-01-18     2018-12-04 2019-01-06</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; 6 adam-… 2017-07-01 2019-06-30 2019-04-01   2019-05-31     2019-01-18 2019-04-01</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; # ℹ 12 more variables: tstart_minPlay &lt;dbl&gt;, tstop_minPlay &lt;dbl&gt;, status &lt;dbl&gt;,</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; #   enum &lt;dbl&gt;, days_lost &lt;dbl&gt;, player_id &lt;fct&gt;, season &lt;fct&gt;,</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; #   games_lost &lt;dbl&gt;, injury &lt;chr&gt;, injury_acl &lt;fct&gt;, injury_type &lt;fct&gt;,</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; #   injury_severity &lt;fct&gt;</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co"># injd |&gt; </span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#   group_by(player) |&gt; </span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#   slice(1, n())</span></span></code></pre></div>
+<p>The outcome is a prepared data set, structured in a suitable way that
+is ready for its use by statistical modelling approaches. This data set
+will always have the columns listed below (standardized columns or
 created by the function), as well as further (optional) sports-related
 variables.</p>
 <ul>
@@ -525,15 +521,15 @@ row corresponds to the risk set of being injured by a second injury
 <h1>The prepared data set, an <code>injd</code> object</h1>
 <p>This final data set it’s an <strong>R</strong> object of class
 <code>injd</code>,</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(injd)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;injd&quot;       &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">class</span>(injd)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;injd&quot;       &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</span></span></code></pre></div>
 <p>and have the following attributes:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(injd, <span class="dv">1</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; injd [108 × 19] (S3: injd/tbl_df/tbl/data.frame)</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;unit_exposure&quot;)= chr &quot;matches_minutes&quot;</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;follow_up&quot;)= tibble [28 × 3] (S3: tbl_df/tbl/data.frame)</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;data_exposures&quot;)=&#39;data.frame&#39;:   42 obs. of  16 variables:</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;data_injuries&quot;)= tibble [82 × 11] (S3: tbl_df/tbl/data.frame)</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">str</span>(injd, <span class="dv">1</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; injd [108 × 19] (S3: injd/tbl_df/tbl/data.frame)</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;unit_exposure&quot;)= chr &quot;matches_minutes&quot;</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;follow_up&quot;)= tibble [28 × 3] (S3: tbl_df/tbl/data.frame)</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;data_exposures&quot;)=&#39;data.frame&#39;:   42 obs. of  19 variables:</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;data_injuries&quot;)= tibble [82 × 11] (S3: tbl_df/tbl/data.frame)</span></span></code></pre></div>
 <ul>
 <li><p><code>unit_exposure</code>: a character indicating the unit of
 exposure time used in this object.</p></li>
@@ -547,8 +543,8 @@ frame.</p></li>
 </ul>
 <p>To extract one of the attributes, for example
 <code>unit_exposure</code>, type:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(injd, <span class="st">&quot;unit_exposure&quot;</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;matches_minutes&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">attr</span>(injd, <span class="st">&quot;unit_exposure&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;matches_minutes&quot;</span></span></code></pre></div>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr />

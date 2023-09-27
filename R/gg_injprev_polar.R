@@ -20,11 +20,6 @@
 #'
 #' @import ggplot2
 #' @importFrom checkmate assert checkClass
-#' @importFrom stats relevel
-#' @importFrom purrr map_dfr
-#' @importFrom lubridate month year
-#' @importFrom stringr str_to_title
-#' @importFrom withr with_locale
 #'
 #' @examples
 #' \donttest{
@@ -59,8 +54,8 @@ gg_injprev_polar <- function(injd,
 
 
   if (by == "monthly") {
-    p <- df_polar %>%
-      dplyr::arrange(-.data$prop) %>%
+    p <- df_polar |>
+      dplyr::arrange(-.data$prop) |>
       ggplot(aes(x = month, y = .data$prop)) +
       geom_bar(aes(fill = .data$type_injury),
                width = 1, stat = "identity", colour = "grey",
@@ -75,8 +70,8 @@ gg_injprev_polar <- function(injd,
   }
 
   if (by == "season") {
-    p <- df_polar %>%
-      dplyr::arrange(-.data$prop) %>%
+    p <- df_polar |>
+      dplyr::arrange(-.data$prop) |>
       ggplot(aes(x = .data$season, y = .data$prop)) +
       geom_bar(aes(fill = .data$type_injury),
                width = 1, stat = "identity", colour = "grey",

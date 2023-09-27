@@ -40,6 +40,7 @@
 #' @importFrom checkmate assert checkClass assert_subset
 #' @importFrom metR geom_text_contour
 #' @importFrom stringr str_split
+#' @importFrom rlang sym
 #'
 #' @references
 #' Bahr R, Clarsen B, Derman W, et al. International Olympic Committee
@@ -83,7 +84,7 @@ gg_injriskmatrix <- function(injds, var_type_injury = NULL,
   injds_data <- injds[[2]]
   if (!is.null(var_type_injury)) var_type_injury <- rlang::sym(var_type_injury)
   ## add proper iqr numeric values
-  injds_data <- injds_data %>%
+  injds_data <- injds_data |>
     mutate(quart25_dayslost = as.numeric(stringr::str_split(.data$iqr_dayslost, "-", simplify = T)[, 1]),
            quart75_dayslost = as.numeric(stringr::str_split(.data$iqr_dayslost, "-", simplify = T)[, 2]))
 
@@ -104,8 +105,8 @@ gg_injriskmatrix <- function(injds, var_type_injury = NULL,
 
   if (add_contour) {
     grid <- expand.grid(x = seq(0, ceiling(max(injds_data[["injincidence_upper"]])), length.out = 100),
-                        y = seq(0, ceiling(max(injds_data[["quart75_dayslost"]]))),  length.out = 100)
-    grid$z <- grid$x*grid$y
+                        y = seq(0, ceiling(max(injds_data[["quart75_dayslost"]])),  length.out = 100))
+    grid$z <- grid$x * grid$y
     # labels <- unique(grid$z[grid$z <= max(injds_data[["quart75_dayslost"]])])
     # grid_label <- data.frame(x = rep(max(grid$x), each = length(labels)),
     #                          y = labels)
