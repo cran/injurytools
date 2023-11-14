@@ -139,7 +139,7 @@ fit
 ## ---- fig.width = 10, fig.height = 4.4----------------------------------------
 ggsurvplot(fit, data = injd_sub,
            palette = c("#E7B800", "#2E9FDF")) + ## colors for the curves
-  xlab("Time (calendar days)") + 
+  xlab("Time [calendar days]") + 
   ylab(expression("Survival probability  ("*hat(S)[KM](t)*")")) +
   ggtitle("Kaplan-Meier curves", 
           subtitle = "in each season (time to first injury)") 
@@ -161,7 +161,7 @@ fit <- survfit(Surv(tstop_day, status) ~ seasonb, data = injd_sub)
 #             break.time.by = 60,
 #             xlim = c(0, 370),
 #             legend.labs = c("Season 17/18", "Season 18/19")) +
-#    xlab("Time (calendar days)") +
+#    xlab("Time [calendar days]") +
 #    ylab(expression("Survival probability  ("*hat(S)[KM](t)*")")) +
 #    ggtitle("Kaplan-Meier curves",
 #            subtitle = "in each season (time to first injury)")
@@ -195,7 +195,7 @@ ggsurv <- ggsurvplot(fit, data = injd_sub,
            break.time.by = 60,
            xlim = c(0, 370),
            legend.labs = c("Season 17/18", "Season 18/19")) +
-  xlab("Time (calendar days)") +
+  xlab("Time [calendar days]") +
   ylab(expression("Survival probability  ("*hat(S)[KM](t)*")")) +
   ggtitle("Kaplan-Meier curves", 
           subtitle = "in each season (time to first injury)") 
@@ -231,10 +231,11 @@ ggsurv
 #             risk.table.col = "strata",
 #             ggtheme = theme_bw(),
 #             break.time.by = 60,
+#             fontsize = 5.5,
 #             xlim = c(0, 370),
 #             legend.labs = c("Season 17/18", "Season 18/19"),
 #             legend.title = "") +
-#    xlab("Time (calendar days)") +
+#    xlab("Time [calendar days]") +
 #    ylab(expression("Survival probability  ("*hat(S)[KM](t)*")")) +
 #    ggtitle("Kaplan-Meier curves",
 #            subtitle = "in each season (time to first injury)")
@@ -278,10 +279,11 @@ ggsurv <- ggsurvplot(fit, data = injd_sub,
            risk.table.col = "strata", 
            ggtheme = theme_bw(),
            break.time.by = 60,
+           fontsize = 5.5,
            xlim = c(0, 370),
            legend.labs = c("Season 17/18", "Season 18/19"),
            legend.title = "") +
-  xlab("Time (calendar days)") +
+  xlab("Time [calendar days]") +
   ylab(expression("Survival probability  ("*hat(S)[KM](t)*")")) +
   ggtitle("Kaplan-Meier curves", 
           subtitle = "in each season (time to first injury)") 
@@ -332,7 +334,9 @@ summary(cfit)
 ## ---- fig.width = 10, fig.height = 5.4----------------------------------------
 ggforest(model = cfit,
          data = injd1819_sub |> 
-           filter(positionb != "Goalkeeper") |> as.data.frame(),
+           filter(positionb != "Goalkeeper") |> 
+           droplevels() |> 
+           as.data.frame(),
          fontsize = 1.2)
 
 ## -----------------------------------------------------------------------------

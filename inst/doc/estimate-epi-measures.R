@@ -119,8 +119,8 @@ injds[[2]] |>
 #  injds_tot_cis |>
 #    select(1, 9, 2, 10) |>
 #    kable(digits = 2,
-#          col.names = c("Incidence",  paste0("CI ", conf_level, "% for \\(I_r\\)"),
-#                        "Burden",     paste0("CI ", conf_level, "% for \\(I_{br}\\)")))
+#          col.names = c("Incidence",  paste0(conf_level, "% CI for \\(I_r\\)"),
+#                        "Burden",     paste0(conf_level, "% CI for \\(I_{br}\\)")))
 
 ## ---- echo = F, eval = modern_r-----------------------------------------------
 # format the table of total incidence and burden (point + ci estimates)
@@ -137,8 +137,8 @@ conf_level <- attr(injds, "conf_level") * 100
 injds_tot_cis |> 
   select(1, 9, 2, 10) |> 
   kable(digits = 2,
-        col.names = c("Incidence",  paste0("CI ", conf_level, "% for \\(I_r\\)"), 
-                      "Burden",     paste0("CI ", conf_level, "% for \\(I_{br}\\)")))
+        col.names = c("Incidence",  paste0(conf_level, "% CI for \\(I_r\\)"), 
+                      "Burden",     paste0(conf_level, "% CI for \\(I_{br}\\)")))
 
 ## -----------------------------------------------------------------------------
 injstats_pertype <- injsummary(injd, var_type_injury = "injury_type", quiet = T)

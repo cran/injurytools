@@ -1,4 +1,8 @@
-# injurytools 1.0.2
+# injurytools 1.0.3 
+
+- `gg_injriskmatrix` now has `cont_max_x` and `cont_max_y` arguments to (optionally) control the ranges of contour lines and allows to pass on more arguments to `geom_contour()`, e.g. `bins = `, `binwidth = `, etc.
+
+# injurytools 1.0.2 
 
 - Fixes in injsummary(): exposure for injury type corrected and proper `conf_level`.
 - Quit pipe operator %>% dependency.

@@ -212,10 +212,10 @@ injdsp <- injdsp |>
   droplevels()
 
 ## ---- eval = F----------------------------------------------------------------
-#  # incidence_glmm_pois <- glmer(formula = ninjuries ~ positionb + (1 | player),
-#  #                              offset = log(totalexpo),
-#  #                              data = injdsp,
-#  #                              family = poisson)
+#  incidence_glmm_pois <- glmer(formula = ninjuries ~ positionb + (1 | player),
+#                               offset = log(totalexpo),
+#                               data = injdsp,
+#                               family = poisson)
 #  # incidence_glmm_pois2 <- glmmTMB::glmmTMB(formula = ninjuries ~ positionb + (1 | player),
 #  #                                          offset = log(totalexpo),
 #  #                                          data = injdsp,
@@ -230,8 +230,8 @@ burden_glm_pois <- glm(ndayslost ~ positionb, offset = log(totalexpo), ## or ~ f
 summary(burden_glm_pois)
 
 ## -----------------------------------------------------------------------------
-cbind(estimate = exp(coef(burden_glm_pois)),
-      exp(confint(burden_glm_pois))) |> 
+cbind(estimate = exp(coef(burden_glm_pois)) * c(90*100, 1, 1), 
+      exp(confint(burden_glm_pois)) * c(90*100, 1, 1)) |> # (to report per 100 player-matches)
   kable()
 
 ## ---- warning = F-------------------------------------------------------------
@@ -290,7 +290,7 @@ phat_zinfnb <- predprob(burden_zinfnb)
 phat_zinfnb_mn <- apply(phat_zinfnb, 2, mean) 
 
 ## put in a data frame
-idx <- seq(1, 317, length.out = 30)
+idx <- seq(1, 62, length.out = 30)
 df_probs <- data.frame(phat_pois_mn     = phat_pois_mn[idx],
                        phat_nb_mn       = phat_nb_mn[idx],
                        phat_zinfpois_mn = phat_zinfpois_mn[idx],
@@ -299,27 +299,22 @@ df_probs <- data.frame(phat_pois_mn     = phat_pois_mn[idx],
   tidyr::gather(key = "prob_type", value = "value", -x) |> 
   mutate(prob_type = factor(prob_type))
 
-## ---- echo = F----------------------------------------------------------------
-## truncate the value at x = 0 (for the plot)
-df_probs <- mutate(df_probs,
-                   value = if_else(value > 0.04, 0.04, value))
-
 ## ---- fig.width = 9, fig.height = 4.8-----------------------------------------
 ggplot(data = injds1718p) + 
-  geom_histogram(aes(x = ndayslost, after_stat(density)), 
-                 breaks = seq(-0.5, 316.5, length.out = 30),
+  geom_histogram(aes(x = injburden/100, after_stat(density)), 
+                 breaks = seq(-0.5, 62, length.out = 30),
                  col = "black", alpha = 0.5) +
   geom_point(data = df_probs, aes(x = x, y = value, 
                                   group = prob_type, col = prob_type)) + 
   geom_line(data = df_probs, aes(x = x, y = value, 
                                  group = prob_type, col = prob_type)) + 
-  ylim(c(0, 0.04)) + xlab("Number of days lost") + ylab("Density") +
+  ylim(c(0, 0.3)) + xlab("Injury burden") + ylab("Density") +
   scale_color_manual(name = "Model:",
                      labels = c("Negative Binomial", "Poisson",
                                 "Zero-Inflated Negative Binomial",
                                 "Zero-Inflated Poisson"),
                      values = c("darkblue", "chocolate", "purple", "red")) +
-  ggtitle("Histogram of number of days lost\nwith conditional Poisson, NB, ZIP and ZINB Densities") +
+  ggtitle("Histogram of injury burden in 2017/2018\nwith conditional Poisson, NB, ZIP and ZINB Densities") +
   theme_counts +
   theme(legend.position = c(0.7, 0.7))
 

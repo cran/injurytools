@@ -110,8 +110,8 @@ injds_perinj[["overall"]] |>
 #               "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 #  # source of the palette: http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
 #  theme3 <- theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 20),
-#                  axis.text.x.bottom = element_text(size = 18),
-#                  axis.text.y.left = element_text(size = 18),
+#                  axis.text.x.bottom = element_text(size = 20),
+#                  axis.text.y.left = element_text(size = 20),
 #                  axis.title.x = element_text(size = 15),
 #                  axis.title.y = element_text(size = 15),
 #                  legend.title = element_text(size = 15),
@@ -121,7 +121,8 @@ injds_perinj[["overall"]] |>
 #                   var_type_injury = "injury_type",
 #                   title = "Risk matrix") +
 #    scale_fill_manual(name = "Type of injury",
-#                      values = palette[c(7, 8, 2:3, 5)]) +
+#                      values = palette[c(7:8, 2:3, 5)]) +
+#    guides(fill = guide_legend(override.aes = list(size = 5))) +
 #    theme3
 
 ## ---- echo = F, fig.width = 9, fig.height = 5.8, warning = F------------------
@@ -131,8 +132,8 @@ palette <- c("#000000", "#E69F00", "#56B4E9", "#009E73",
 theme3 <- theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 20),
                 axis.text.x.bottom = element_text(size = 18),
                 axis.text.y.left = element_text(size = 18),
-                axis.title.x = element_text(size = 15),
-                axis.title.y = element_text(size = 15),
+                axis.title.x = element_text(size = 18),
+                axis.title.y = element_text(size = 18),
                 legend.title = element_text(size = 15),
                 legend.text = element_text(size = 15))
 
@@ -141,6 +142,7 @@ gg_injriskmatrix(injds_perinj,
                  title = "Risk matrix") +
   scale_fill_manual(name = "Type of injury",
                     values = palette[c(7:8, 2:3, 5)]) +
+  guides(fill = guide_legend(override.aes = list(size = 5))) +
   theme3
 
 ## ---- warning = F-------------------------------------------------------------
@@ -299,23 +301,34 @@ p2 <- gg_injriskmatrix(injds2_perinj, var_type_injury = "injury_type",
 #  theme3 <- theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 20),
 #                  axis.text.x.bottom = element_text(size = 18),
 #                  axis.text.y.left = element_text(size = 18),
-#                  axis.title.x = element_text(size = 15),
-#                  axis.title.y = element_text(size = 15),
+#                  axis.title.x = element_text(size = 18),
+#                  axis.title.y = element_text(size = 18),
 #                  legend.title = element_text(size = 15),
 #                  legend.text = element_text(size = 15))
 #  
+#  ## Plot
+#  p1 <- gg_injriskmatrix(injds1_perinj, var_type_injury = "injury_type",
+#                         title = "Season 2017/2018", add_contour = T,
+#                         cont_max_x = 6, cont_max_y = 130, ## after checking the data
+#                         bins = 15)
+#  p2 <- gg_injriskmatrix(injds2_perinj, var_type_injury = "injury_type",
+#                         title = "Season 2018/2019", add_contour = T,
+#                         cont_max_x = 6, cont_max_y = 130,
+#                         bins = 15)
 #  
 #  p1 <- p1 +
 #    scale_x_continuous(limits = c(0, 5.5)) +
 #    scale_y_continuous(limits = c(0, 125)) +
 #    scale_fill_manual(name = "Type of injury",
-#                      values = palette[c(1:3, 5)]) + # get rid off the green (pos: 4)
+#                      values = palette[c(8, 2:3, 5)]) + # get rid off the green (pos: 4)
+#    guides(fill = guide_legend(override.aes = list(size = 5))) +
 #    theme3
 #  p2 <- p2 +
 #    scale_x_continuous(limits = c(0, 5.5)) +
 #    scale_y_continuous(limits = c(0, 125)) +
 #    scale_fill_manual(name = "Type of injury",
 #                      values = palette[c(7, 8, 2:3, 5)]) + # keep the same color coding
+#     guides(fill = guide_legend(override.aes = list(size = 5))) +
 #    theme3
 #  
 #  grid.arrange(p1, p2, ncol = 2,
@@ -328,23 +341,34 @@ palette <- c("#000000", "#E69F00", "#56B4E9", "#009E73",
 theme3 <- theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 20),
                 axis.text.x.bottom = element_text(size = 18),
                 axis.text.y.left = element_text(size = 18),
-                axis.title.x = element_text(size = 15),
-                axis.title.y = element_text(size = 15),
+                axis.title.x = element_text(size = 18),
+                axis.title.y = element_text(size = 18),
                 legend.title = element_text(size = 15),
                 legend.text = element_text(size = 15))
 
+## Plot
+p1 <- gg_injriskmatrix(injds1_perinj, var_type_injury = "injury_type", 
+                       title = "Season 2017/2018", add_contour = T,
+                       cont_max_x = 6, cont_max_y = 130, ## after checking the data
+                       bins = 15) 
+p2 <- gg_injriskmatrix(injds2_perinj, var_type_injury = "injury_type",
+                       title = "Season 2018/2019", add_contour = T, 
+                       cont_max_x = 6, cont_max_y = 130,
+                       bins = 15)
 
 p1 <- p1 +
   scale_x_continuous(limits = c(0, 5.5)) +
   scale_y_continuous(limits = c(0, 125)) + 
   scale_fill_manual(name = "Type of injury",
                     values = palette[c(8, 2:3, 5)]) + # get rid off the green (pos: 4)
+  guides(fill = guide_legend(override.aes = list(size = 5))) +
   theme3
 p2 <- p2 +
   scale_x_continuous(limits = c(0, 5.5)) +
   scale_y_continuous(limits = c(0, 125)) + 
   scale_fill_manual(name = "Type of injury",
                     values = palette[c(7:8, 2:3, 5)]) + # keep the same color coding
+  guides(fill = guide_legend(override.aes = list(size = 5))) +
   theme3
 
 grid.arrange(p1, p2, ncol = 2, 

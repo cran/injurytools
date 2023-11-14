@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-<meta name="date" content="2023-09-27" />
+<meta name="date" content="2023-11-14" />
 
 <title>Estimate Measures of Injury Epidemiology</title>
 
@@ -585,7 +585,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Estimate Measures of Injury
 Epidemiology</h1>
-<h4 class="date">2023-09-27</h4>
+<h4 class="date">2023-11-14</h4>
 
 
 
@@ -678,7 +678,7 @@ Prepare data
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>                            <span class="at">data_injuries  =</span> df_injuries,</span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>                            <span class="at">exp_unit =</span> <span class="st">&quot;matches_minutes&quot;</span>)</span></code></pre></div>
 </details>
-<p>Now, the preprocessed data is passed to <code>injsummary()</code> to
+<p>Now, the preprocessed data are passed to <code>injsummary()</code> to
 calculate injury summary statistics:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>injds <span class="ot">&lt;-</span> <span class="fu">injsummary</span>(injd)</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; Warning in injsummary_unit(unit, injds, quiet): </span></span>
@@ -691,8 +691,7 @@ calculate injury summary statistics:</p>
 <code>quiet = TRUE</code>). They are displayed to make it clear what the
 exposure time unit is<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
 <p>What <code>injsummary()</code> returns as its output is a list of two
-elements, i.e. the output stored (here) in the <code>injds</code> object
-consists of,</p>
+elements:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">str</span>(injds, <span class="dv">1</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; List of 2</span></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;  $ playerwise: tibble [28 × 9] (S3: tbl_df/tbl/data.frame)</span></span>
@@ -701,7 +700,8 @@ consists of,</p>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;unit_exposure&quot;)= chr &quot;matches_minutes&quot;</span></span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;unit_timerisk&quot;)= chr &quot;100 player-match&quot;</span></span>
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;conf_level&quot;)= num 0.95</span></span></code></pre></div>
-<p>two data frames (two tables), which can be accessed by typing
+<p>i.e. the output stored in this <code>injds</code> object consists
+of,two data frames (two tables), which can be accessed by typing
 <code>injds[[1]]</code> (or <code>injds[[&quot;playerwise&quot;]]</code>) and
 <code>injds[[2]]</code> (<code>injds[[&quot;overal&quot;]]</code>).</p>
 <p>To present the results in a more tidier and comprehensible way
@@ -1154,8 +1154,8 @@ Code to format the table
 <span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>injds_tot_cis <span class="sc">|&gt;</span> </span>
 <span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span>, <span class="dv">9</span>, <span class="dv">2</span>, <span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>,</span>
-<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>        <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Incidence&quot;</span>,  <span class="fu">paste0</span>(<span class="st">&quot;CI &quot;</span>, conf_level, <span class="st">&quot;% for </span><span class="sc">\\</span><span class="st">(I_r</span><span class="sc">\\</span><span class="st">)&quot;</span>), </span>
-<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>                      <span class="st">&quot;Burden&quot;</span>,     <span class="fu">paste0</span>(<span class="st">&quot;CI &quot;</span>, conf_level, <span class="st">&quot;% for </span><span class="sc">\\</span><span class="st">(I_{br}</span><span class="sc">\\</span><span class="st">)&quot;</span>)))</span></code></pre></div>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>        <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Incidence&quot;</span>,  <span class="fu">paste0</span>(conf_level, <span class="st">&quot;% CI for </span><span class="sc">\\</span><span class="st">(I_r</span><span class="sc">\\</span><span class="st">)&quot;</span>), </span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>                      <span class="st">&quot;Burden&quot;</span>,     <span class="fu">paste0</span>(conf_level, <span class="st">&quot;% CI for </span><span class="sc">\\</span><span class="st">(I_{br}</span><span class="sc">\\</span><span class="st">)&quot;</span>)))</span></code></pre></div>
 </details>
 <table>
 <thead>
@@ -1166,13 +1166,13 @@ Code to format the table
 Incidence
 </th>
 <th style="text-align:left;">
-CI 95% for <span class="math inline">\(I_r\)</span>
+95% CI for <span class="math inline">\(I_r\)</span>
 </th>
 <th style="text-align:right;">
 Burden
 </th>
 <th style="text-align:left;">
-CI 95% for <span class="math inline">\(I_{br}\)</span>
+95% CI for <span class="math inline">\(I_{br}\)</span>
 </th>
 </tr>
 </thead>
@@ -1857,11 +1857,12 @@ of player-exposure, per player-season etc.).</p>
 </div>
 <div class="alert alert-warning" role="alert">
 <p><strong>NOTE 3:</strong> as <span class="citation">Waldén et al. (<a href="#ref-walden2023">2023</a>)</span> point out, incidence-based
-measures that provide a standard time-window for the population at risk
-(injuries per hour) are preferable to measures for which the time at
-risk varies across individuals (injuries per athletic-exposure, injuries
-per number of matches), because time-based measures better facilitate
-comparison across sports.</p>
+measures that provide a standardized time window for the population at
+risk (e.g., injuries per hour) are preferred over measures in which the
+time at risk varies among individuals (e.g., injuries per athletic
+exposure, injuries per number of matches). This preference for measures
+with standardized time scales aids in the comparison of statistics
+across different cohorts and sports.</p>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
@@ -1895,8 +1896,9 @@ Medicine</em>. <a href="https://doi.org/10.1136/bjsports-2022-106405">https://do
 <hr />
 <ol>
 <li id="fn1"><p>These data sets are provided for illustrative purposes.
-We warn that they might not be accurate, there might be a mismatch and
-non-completeness with what actually occurred.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+We warn that they might not be accurate and could potentially include
+discrepancies or incomplete information compared to what actually
+occurred.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>Something that it is important to be aware of.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

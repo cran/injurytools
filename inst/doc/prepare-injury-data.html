@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-<meta name="date" content="2023-09-27" />
+<meta name="date" content="2023-11-14" />
 
 <title>Prepare Sports Injury Data</title>
 
@@ -338,7 +338,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">Prepare Sports Injury Data</h1>
-<h4 class="date">2023-09-27</h4>
+<h4 class="date">2023-11-14</h4>
 
 
 
@@ -347,9 +347,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Data preprocessing is the very first step one has to follow, every
 time one wants to analyze sports injury data using
 <code>injurytools</code> <strong>R</strong> package.</p>
-<p>This document briefly shows how to use the functions that are
-intended to facilitate this data preprocessing step and how the final
-data set is like.</p>
+<p>This document briefly shows how to use the functions intended to
+facilitate this data preprocessing step and what the final data set is
+like.</p>
 <div id="starting-point" class="section level1">
 <h1>Starting point</h1>
 <p>Data can be collected in several ways and by several means. A
@@ -456,8 +456,8 @@ See the R-code
 <div id="integrate-both-sources-of-data" class="section level1">
 <h1>2) integrate both sources of data</h1>
 <p>Then, we apply <code>prepare_all()</code> to the data sets tidied up
-above. It is important to specify the unit of exposure,
-<code>exp_unit</code> argument, that must be one of “minutes”, “hours”,
+above. It is important to specify the unit of exposure, i.e. the
+<code>exp_unit</code> argument, which must be one of “minutes”, “hours”,
 “days”, “matches_num”, “matches_minutes”, “activity_days” or
 “seasons”.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>injd <span class="ot">&lt;-</span>  <span class="fu">prepare_all</span>(<span class="at">data_exposures =</span> df_exposures,</span>
@@ -481,7 +481,7 @@ above. It is important to specify the unit of exposure,
 <span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#   group_by(player) |&gt; </span></span>
 <span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#   slice(1, n())</span></span></code></pre></div>
 <p>The outcome is a prepared data set, structured in a suitable way that
-is ready for its use by statistical modelling approaches. This data set
+is ready for its use by statistical modelling approaches. These data set
 will always have the columns listed below (standardized columns or
 created by the function), as well as further (optional) sports-related
 variables.</p>
@@ -510,8 +510,8 @@ otherwise 0), i.e. <code>date_recovered</code> -
 <code>date_injured</code> in days.</p></li>
 </ul>
 <p>For example the first row of <code>injd</code> corresponds to the
-player Adam Lallana, to the risk set that starts in 2017-07-01 and ends
-at 2017-07-31, after having played 236 minutes, when he got firstly
+player Adam Lallana, to the risk set that starts on 2017-07-01 and ends
+on 2017-07-31, after having played 236 minutes, when he got firstly
 (<code>enum</code> = 1) injured (<code>status</code> = 1). The second
 row corresponds to the risk set of being injured by a second injury
 (<code>enum</code> = 2), the set starts when he was fully recovered in
@@ -519,7 +519,7 @@ row corresponds to the risk set of being injured by a second injury
 </div>
 <div id="the-prepared-data-set-an-injd-object" class="section level1">
 <h1>The prepared data set, an <code>injd</code> object</h1>
-<p>This final data set it’s an <strong>R</strong> object of class
+<p>These final data set it’s an <strong>R</strong> object of class
 <code>injd</code>,</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">class</span>(injd)</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;injd&quot;       &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</span></span></code></pre></div>
@@ -549,7 +549,7 @@ frame.</p></li>
 <div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
-<li id="fn1"><p>If the data is not recorded this way, we suggest
+<li id="fn1"><p>If the data are not recorded this way, we suggest
 splitting both information into separate tables and then following the
 same functions provided by the package.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>The <code>date</code> argument should be either of class

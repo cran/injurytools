@@ -1,6 +1,6 @@
 Package: injurytools
 Title: A Toolkit for Sports Injury Data Analysis
-Version: 1.0.2
+Version: 1.0.3
 Authors@R: c(
     person(given = "Lore",
            family = "Zumeta Olaskoaga",
@@ -9,7 +9,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-6141-1469")),
     person(given = "Dae-Jin",
            family = "Lee",
-           role = c("aut"),
+           role = c("ctb"),
            email = "dlee@bcamath.org",
            comment = c(ORCID = "0000-0002-8995-8535")))
 Description: Sports Injury Data analysis aims to identify and describe the
@@ -35,10 +35,10 @@ URL: https://github.com/lzumeta/injurytools,
         https://lzumeta.github.io/injurytools/
 BugReports: https://github.com/lzumeta/injurytools/issues
 NeedsCompilation: no
-Packaged: 2023-09-27 21:33:23 UTC; lzumeta
+Packaged: 2023-11-14 16:16:49 UTC; lzumeta
 Author: Lore Zumeta Olaskoaga [aut, cre]
     (<https://orcid.org/0000-0001-6141-1469>),
-  Dae-Jin Lee [aut] (<https://orcid.org/0000-0002-8995-8535>)
+  Dae-Jin Lee [ctb] (<https://orcid.org/0000-0002-8995-8535>)
 Maintainer: Lore Zumeta Olaskoaga <lzumeta@bcamath.org>
 Repository: CRAN
-Date/Publication: 2023-09-27 21:50:02 UTC
+Date/Publication: 2023-11-14 17:20:05 UTC

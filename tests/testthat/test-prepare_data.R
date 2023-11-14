@@ -51,8 +51,8 @@ test_that("prepare_all works", {
                               time_expo     = "minutes_played")
 
   injd <- suppressWarnings(prepare_all(data_exposures = df_exposures,
-                      data_injuries  = df_injuries,
-                      exp_unit = "matches_minutes"))
+                                       data_injuries  = df_injuries,
+                                       exp_unit = "matches_minutes"))
   expect_equal(is.data.frame(injd), TRUE)
   expect_s3_class(injd, "injd")
   expect_subset(c("player", "t0", "tf", "date_injured", "date_recovered",
