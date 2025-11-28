@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 library(knitr)
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -47,17 +47,17 @@ library(gridExtra)
 # set the global theme of all plots
 theme_set(theme_bw())
 
-## ---- warning = F-------------------------------------------------------------
+## ----warning = F--------------------------------------------------------------
 ## 17/18
 df_exposures1718 <- prepare_exp(df_exposures0 = 
                                   raw_df_exposures |> filter(season == "17/18"),
-                                player        = "player_name",
+                                person_id     = "player_name",
                                 date          = "year",
                                 time_expo     = "minutes_played") |> 
   mutate(seasonb = date2season(date))
 df_injuries1718 <- prepare_inj(df_injuries0   =
                                  raw_df_injuries |> filter(season == "17/18"),
-                               player         = "player_name",
+                               person_id      = "player_name",
                                date_injured   = "from",
                                date_recovered = "until")
 injd1718 <- prepare_all(data_exposures = df_exposures1718,
@@ -67,32 +67,32 @@ injd1718 <- prepare_all(data_exposures = df_exposures1718,
 injd1718 <- injd1718 |> 
   mutate(seasonb = date2season(tstart)) |> 
   ## join to have info such as position, age, citizenship etc.
-  left_join(df_exposures1718, by = c("player" = "player", 
-                                     "seasonb" = "seasonb")) 
+  left_join(df_exposures1718, by = c("person_id" = "person_id", 
+                                     "seasonb"   = "seasonb")) 
 
 ## create injd1718_sub:
 ##  - time to first injury
 ##  - equivalent tstart and tstop in calendar days
 injd1718_sub <- injd1718 |> 
   mutate(tstop_day = as.numeric(difftime(tstop, tstart, units = "days"))) %>%
-  group_by(player) |>  ## important
+  group_by(person_id) |>  ## important
   mutate(tstop_day = cumsum(tstop_day),
          tstart_day = lag(tstop_day, default = 0)) |> 
   ungroup() |> 
-  dplyr::select(player:tstop_minPlay, tstart_day, tstop_day, everything()) |> 
+  dplyr::select(person_id:tstop_minPlay, tstart_day, tstop_day, everything()) |> 
   filter(enum == 1) ## time to first injury
 
-## ---- warning = F-------------------------------------------------------------
+## ----warning = F--------------------------------------------------------------
 ## 18/19
 df_exposures1819 <- prepare_exp(df_exposures0 = 
                                   raw_df_exposures |> filter(season == "18/19"),
-                                player        = "player_name",
+                                person_id     = "player_name",
                                 date          = "year",
                                 time_expo     = "minutes_played") |> 
   mutate(seasonb = date2season(date))
 df_injuries1819 <- prepare_inj(df_injuries0   = 
                                  raw_df_injuries |> filter(season == "18/19"),
-                               player         = "player_name",
+                               person_id      = "player_name",
                                date_injured   = "from",
                                date_recovered = "until")
 injd1819 <- prepare_all(data_exposures = df_exposures1819,
@@ -102,19 +102,19 @@ injd1819 <- prepare_all(data_exposures = df_exposures1819,
 injd1819 <- injd1819 |> 
   mutate(seasonb = date2season(tstart)) |> 
   ## join to have info such as position, age, citizenship etc.
-  left_join(df_exposures1819, by = c("player" = "player", 
-                                     "seasonb" = "seasonb")) 
+  left_join(df_exposures1819, by = c("person_id" = "person_id", 
+                                     "seasonb"   = "seasonb")) 
 
 ## create injd1819_sub:
 ##  - time to first injury
 ##  - equivalent tstart and tstop in calendar days
 injd1819_sub <- injd1819 |> 
   mutate(tstop_day = as.numeric(difftime(tstop, tstart, units = "days"))) %>%
-  group_by(player) |>  ## important
+  group_by(person_id) |>  ## important
   mutate(tstop_day = cumsum(tstop_day),
          tstart_day = lag(tstop_day, default = 0)) |> 
   ungroup() |> 
-  dplyr::select(player:tstop_minPlay, tstart_day, tstop_day, everything()) |> 
+  dplyr::select(person_id:tstop_minPlay, tstart_day, tstop_day, everything()) |> 
   filter(enum == 1) ## time to first injury
 
 ## -----------------------------------------------------------------------------
@@ -136,7 +136,7 @@ fit <- survfit(Surv(tstart_day, tstop_day, status) ~ seasonb,
 ## -----------------------------------------------------------------------------
 fit
 
-## ---- fig.width = 10, fig.height = 4.4----------------------------------------
+## ----fig.width = 10, fig.height = 4.4-----------------------------------------
 ggsurvplot(fit, data = injd_sub,
            palette = c("#E7B800", "#2E9FDF")) + ## colors for the curves
   xlab("Time [calendar days]") + 
@@ -144,7 +144,7 @@ ggsurvplot(fit, data = injd_sub,
   ggtitle("Kaplan-Meier curves", 
           subtitle = "in each season (time to first injury)") 
 
-## ---- results = "hide"--------------------------------------------------------
+## ----results = "hide"---------------------------------------------------------
 ## since tstop_day == (tstop_day - tstart_day)
 all(injd_sub$tstop_day == (injd_sub$tstop_day - injd_sub$tstart_day))
 # [1] TRUE
@@ -153,41 +153,41 @@ all(injd_sub$tstop_day == (injd_sub$tstop_day - injd_sub$tstart_day))
 fit <- survfit(Surv(tstart_day, tstop_day, status) ~ seasonb, data = injd_sub)
 fit <- survfit(Surv(tstop_day, status) ~ seasonb, data = injd_sub)
 
-## ---- warning = F, eval = F---------------------------------------------------
-#  ggsurv <- ggsurvplot(fit, data = injd_sub,
-#             palette = c("#E7B800", "#2E9FDF"),
-#             surv.median.line = "hv",
-#             ggtheme = theme_bw(),
-#             break.time.by = 60,
-#             xlim = c(0, 370),
-#             legend.labs = c("Season 17/18", "Season 18/19")) +
-#    xlab("Time [calendar days]") +
-#    ylab(expression("Survival probability  ("*hat(S)[KM](t)*")")) +
-#    ggtitle("Kaplan-Meier curves",
-#            subtitle = "in each season (time to first injury)")
-#  
-#  # add median survival estimates
-#  ggsurv$plot <- ggsurv$plot +
-#    annotate("text",
-#             x = 70, y = 0.4,
-#             label = expression(hat(S)[18/19]*"(106)=0.5"),
-#             col = "#2E9FDF") +
-#      annotate("text",
-#             x = 230, y = 0.4,
-#             label = expression(hat(S)[17/18]*"(265)=0.5"),
-#             col = "#E7B800")
-#  
-#  ggsurv$plot <- ggsurv$plot +
-#    theme(plot.title = element_text(size = rel(1.5)),
-#          plot.subtitle = element_text(size = rel(1.5)),
-#          axis.title = element_text(size = rel(1.3)),
-#          axis.text = element_text(size = rel(1.3)),
-#          legend.title = element_blank(),
-#          legend.text = element_text(size = rel(1.2)))
-#  
-#  ggsurv
+## ----warning = F, eval = F----------------------------------------------------
+# ggsurv <- ggsurvplot(fit, data = injd_sub,
+#            palette = c("#E7B800", "#2E9FDF"),
+#            surv.median.line = "hv",
+#            ggtheme = theme_bw(),
+#            break.time.by = 60,
+#            xlim = c(0, 370),
+#            legend.labs = c("Season 17/18", "Season 18/19")) +
+#   xlab("Time [calendar days]") +
+#   ylab(expression("Survival probability  ("*hat(S)[KM](t)*")")) +
+#   ggtitle("Kaplan-Meier curves",
+#           subtitle = "in each season (time to first injury)")
+# 
+# # add median survival estimates
+# ggsurv$plot <- ggsurv$plot +
+#   annotate("text",
+#            x = 70, y = 0.4,
+#            label = expression(hat(S)[18/19]*"(106)=0.5"),
+#            col = "#2E9FDF") +
+#     annotate("text",
+#            x = 230, y = 0.4,
+#            label = expression(hat(S)[17/18]*"(265)=0.5"),
+#            col = "#E7B800")
+# 
+# ggsurv$plot <- ggsurv$plot +
+#   theme(plot.title = element_text(size = rel(1.5)),
+#         plot.subtitle = element_text(size = rel(1.5)),
+#         axis.title = element_text(size = rel(1.3)),
+#         axis.text = element_text(size = rel(1.3)),
+#         legend.title = element_blank(),
+#         legend.text = element_text(size = rel(1.2)))
+# 
+# ggsurv
 
-## ---- echo = F, warning = F, fig.width = 10, fig.height = 4.8-----------------
+## ----echo = F, warning = F, fig.width = 10, fig.height = 4.8------------------
 ggsurv <- ggsurvplot(fit, data = injd_sub,
            palette = c("#E7B800", "#2E9FDF"),
            surv.median.line = "hv",
@@ -221,55 +221,55 @@ ggsurv$plot <- ggsurv$plot +
 
 ggsurv
 
-## ---- warning = F, eval = F---------------------------------------------------
-#  ggsurv <- ggsurvplot(fit, data = injd_sub,
-#             palette = c("#E7B800", "#2E9FDF"),
-#             risk.table = T,
-#             conf.int = T,
-#             pval = T,
-#             surv.median.line = "hv",
-#             risk.table.col = "strata",
-#             ggtheme = theme_bw(),
-#             break.time.by = 60,
-#             fontsize = 5.5,
-#             xlim = c(0, 370),
-#             legend.labs = c("Season 17/18", "Season 18/19"),
-#             legend.title = "") +
-#    xlab("Time [calendar days]") +
-#    ylab(expression("Survival probability  ("*hat(S)[KM](t)*")")) +
-#    ggtitle("Kaplan-Meier curves",
-#            subtitle = "in each season (time to first injury)")
-#  
-#  # add median survival estimates
-#  ggsurv$plot <- ggsurv$plot +
-#    annotate("text",
-#             x = 70, y = 0.4,
-#             label = expression(hat(S)[18/19]*"(106)=0.5"),
-#             col = "#2E9FDF") +
-#      annotate("text",
-#             x = 230, y = 0.4,
-#             label = expression(hat(S)[17/18]*"(265)=0.5"),
-#             col = "#E7B800")
-#  # quit title and y text of the risk table
-#  ggsurv$table <- ggsurv$table +
-#    ggtitle("Number of players at risk") +
-#    theme(plot.subtitle = element_blank(),
-#          axis.title.y = element_blank(),
-#          plot.title = element_text(size = rel(1.5)),
-#          axis.title.x = element_text(size = rel(1.3)),
-#          axis.text = element_text(size = rel(1.3)))
-#  
-#  ggsurv$plot <- ggsurv$plot +
-#    theme(plot.title = element_text(size = rel(1.5)),
-#          plot.subtitle = element_text(size = rel(1.5)),
-#          axis.title = element_text(size = rel(1.3)),
-#          axis.text = element_text(size = rel(1.3)),
-#          legend.title = element_blank(),
-#          legend.text = element_text(size = rel(1.2)))
-#  
-#  ggsurv
+## ----warning = F, eval = F----------------------------------------------------
+# ggsurv <- ggsurvplot(fit, data = injd_sub,
+#            palette = c("#E7B800", "#2E9FDF"),
+#            risk.table = T,
+#            conf.int = T,
+#            pval = T,
+#            surv.median.line = "hv",
+#            risk.table.col = "strata",
+#            ggtheme = theme_bw(),
+#            break.time.by = 60,
+#            fontsize = 5.5,
+#            xlim = c(0, 370),
+#            legend.labs = c("Season 17/18", "Season 18/19"),
+#            legend.title = "") +
+#   xlab("Time [calendar days]") +
+#   ylab(expression("Survival probability  ("*hat(S)[KM](t)*")")) +
+#   ggtitle("Kaplan-Meier curves",
+#           subtitle = "in each season (time to first injury)")
+# 
+# # add median survival estimates
+# ggsurv$plot <- ggsurv$plot +
+#   annotate("text",
+#            x = 70, y = 0.4,
+#            label = expression(hat(S)[18/19]*"(106)=0.5"),
+#            col = "#2E9FDF") +
+#     annotate("text",
+#            x = 230, y = 0.4,
+#            label = expression(hat(S)[17/18]*"(265)=0.5"),
+#            col = "#E7B800")
+# # quit title and y text of the risk table
+# ggsurv$table <- ggsurv$table +
+#   ggtitle("Number of players at risk") +
+#   theme(plot.subtitle = element_blank(),
+#         axis.title.y = element_blank(),
+#         plot.title = element_text(size = rel(1.5)),
+#         axis.title.x = element_text(size = rel(1.3)),
+#         axis.text = element_text(size = rel(1.3)))
+# 
+# ggsurv$plot <- ggsurv$plot +
+#   theme(plot.title = element_text(size = rel(1.5)),
+#         plot.subtitle = element_text(size = rel(1.5)),
+#         axis.title = element_text(size = rel(1.3)),
+#         axis.text = element_text(size = rel(1.3)),
+#         legend.title = element_blank(),
+#         legend.text = element_text(size = rel(1.2)))
+# 
+# ggsurv
 
-## ---- echo = F, warning = F, fig.width = 10, fig.height = 6-------------------
+## ----echo = F, warning = F, fig.width = 10, fig.height = 6--------------------
 ggsurv <- ggsurvplot(fit, data = injd_sub, 
            palette = c("#E7B800", "#2E9FDF"),
            risk.table = T,
@@ -331,7 +331,7 @@ cfit <- coxph(Surv(tstop_day, status) ~ positionb + age + yellows,
 ## -----------------------------------------------------------------------------
 summary(cfit)
 
-## ---- fig.width = 10, fig.height = 5.4----------------------------------------
+## ----fig.width = 10, fig.height = 5.4-----------------------------------------
 ggforest(model = cfit,
          data = injd1819_sub |> 
            filter(positionb != "Goalkeeper") |> 
@@ -342,7 +342,7 @@ ggforest(model = cfit,
 ## -----------------------------------------------------------------------------
 cox.zph(cfit)
 
-## ---- fig.width = 10, fig.height = 8------------------------------------------
+## ----fig.width = 10, fig.height = 8-------------------------------------------
 ggcoxzph(cox.zph(cfit))
 
 ## -----------------------------------------------------------------------------
@@ -375,7 +375,7 @@ sfitn <- bind_rows(sfitn1, sfitn2) |>
   mutate(strata = factor(strata),
          Age = factor(age))
 
-## ---- fig.width = 10, fig.height = 4.8----------------------------------------
+## ----fig.width = 10, fig.height = 4.8-----------------------------------------
 ggplot(sfitn, aes(x = time, y = surv, col = strata)) +
   geom_step(aes(linetype = Age)) +
   scale_color_manual(name = "Season", values = c("#E7B800", "#2E9FDF")) +
@@ -391,7 +391,7 @@ cox.zph(sfit)
 ## -----------------------------------------------------------------------------
 ## prepare exposure data set and create seasonb column
 df_exposures <- prepare_exp(df_exposures0 = raw_df_exposures,
-                             player        = "player_name",
+                             person_id     = "player_name",
                              date          = "year",
                              time_expo     = "minutes_played") |> 
   mutate(seasonb = date2season(date))
@@ -399,8 +399,8 @@ df_exposures <- prepare_exp(df_exposures0 = raw_df_exposures,
 ## add more info to injd data frame (based on exposure data)
 injd <- injd |> 
   mutate(seasonb = date2season(tstart)) |> 
-  left_join(df_exposures, by = c("player" = "player",
-                                  "seasonb" = "seasonb")) |> 
+  left_join(df_exposures, by = c("person_id" = "person_id",
+                                  "seasonb"  = "seasonb")) |> 
   mutate(positionb = factor(str_split_i(position, "_", 1)),
          injury_severity = addNA(injury_severity),
          days_lost = lag(days_lost, default = 0),
@@ -414,22 +414,22 @@ injd <- injd |>
   filter(positionb != "Goalkeeper") |> 
   droplevels()
 
-## ---- warning = F-------------------------------------------------------------
+## ----warning = F--------------------------------------------------------------
 sffit <- coxph(Surv(tstart_minPlay, tstop_minPlay, status) ~ 
                  age + days_lost + 
-                 frailty(player, distribution = "gamma"), data = injd)
+                 frailty(person_id, distribution = "gamma"), data = injd)
 
 ## -----------------------------------------------------------------------------
 sffit2 <- coxme(Surv(tstart_minPlay, tstop_minPlay, status) ~ 
-                  age + days_lost + (1 | player), data = injd)
+                  age + days_lost + (1 | person_id), data = injd)
 
-## ---- warning = F-------------------------------------------------------------
+## ----warning = F--------------------------------------------------------------
 summary(sffit)
 
 ## -----------------------------------------------------------------------------
 summary(sffit2)
 
-## ---- warning = F-------------------------------------------------------------
+## ----warning = F--------------------------------------------------------------
 ## plot p1, for covariate effects
 ## a trick to not to plot frailties as HRs
 sffit_aux <- sffit
@@ -438,30 +438,30 @@ attr(sffit_aux$terms, "dataClasses") <-
 p1 <- ggforest(sffit_aux, data = injd,
                fontsize = 0.8)
 
-## ---- eval = F----------------------------------------------------------------
-#  ## plot p2, for frailty terms
-#  df_frailties <- data.frame(player = levels(injd$player),
-#                             frail = sffit$frail,
-#                             expfrail = exp(sffit$frail),
-#                             col = factor(ifelse(sffit$frail >= 0, 1, 0)))
-#  p2 <- ggplot(df_frailties) +
-#    geom_segment(aes(x = player, xend = player,
-#                     y = 1, yend = expfrail, col = col)) +
-#    geom_hline(yintercept = 1) +
-#    geom_text(aes(x = player, y = expfrail + 0.12*sign(frail), label = player),
-#              size = 3, angle = 30) +
-#    scale_color_manual(name = "", values = c("darkred", "dodgerblue"))
+## ----eval = F-----------------------------------------------------------------
+# ## plot p2, for frailty terms
+# df_frailties <- data.frame(person_id = levels(injd$person_id),
+#                            frail = sffit$frail,
+#                            expfrail = exp(sffit$frail),
+#                            col = factor(ifelse(sffit$frail >= 0, 1, 0)))
+# p2 <- ggplot(df_frailties) +
+#   geom_segment(aes(x = person_id, xend = person_id,
+#                    y = 1, yend = expfrail, col = col)) +
+#   geom_hline(yintercept = 1) +
+#   geom_text(aes(x = person_id, y = expfrail + 0.12*sign(frail), label = person_id),
+#             size = 3, angle = 30) +
+#   scale_color_manual(name = "", values = c("darkred", "dodgerblue"))
 
 ## -----------------------------------------------------------------------------
-df_frailties <- data.frame(player = levels(injd$player), 
+df_frailties <- data.frame(person_id = levels(injd$person_id), 
                            frail = sffit$frail,
                            expfrail = exp(sffit$frail),
                            col = factor(ifelse(sffit$frail >= 0, 1, 0)))
 p2 <- ggplot(df_frailties) +
-  geom_segment(aes(x = player, xend = player,
+  geom_segment(aes(x = person_id, xend = person_id,
                    y = 1, yend = expfrail, col = col)) +
   geom_hline(yintercept = 1) + 
-  geom_text(aes(x = player, y = expfrail + 0.12*sign(frail), label = player),
+  geom_text(aes(x = person_id, y = expfrail + 0.12*sign(frail), label = person_id),
             size = 3, angle = 15) +
   scale_color_manual(name = "", values = c("darkred", "dodgerblue")) + 
   scale_x_discrete(expand = c(0.08, 0)) +
@@ -475,6 +475,6 @@ p2 <- ggplot(df_frailties) +
         axis.text.y = element_text(size = rel(1.2)),
         plot.title = element_text(size = rel(1.4), hjust = 0.5))
 
-## ---- fig.widht = 10, fig.height = 6.8----------------------------------------
+## ----fig.widht = 10, fig.height = 6.8-----------------------------------------
 grid.arrange(p1, p2, nrow = 2, heights = c(1, 1.3))
 

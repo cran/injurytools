@@ -1,7 +1,7 @@
 test_that("check_injfollowup works", {
-  followup_df <- attr(injd, "follow_up")
+  followup_df <- get_data_followup(injd)
   data_injuries  <- prepare_inj(df_injuries0   = raw_df_injuries,
-                                player         = "player_name",
+                                person_id      = "player_name",
                                 date_injured   = "from",
                                 date_recovered = "until")
 
@@ -13,39 +13,30 @@ test_that("check_injfollowup works", {
 })
 
 test_that("new_injd works", {
-  newinjd <- new_injd(data.frame(injd), "matches_minutes",
-                   attr(injd, "follow_up"),
-                   attr(injd, "data_exposures"),
-                   attr(injd, "data_injuries"))
+  newinjd <- new_injd(data.frame(injd), "matches_minutes")
   expect_equal(is_injd(newinjd), TRUE)
 
-  expect_error(new_injd(data.frame(injd), "match_min",
-                        attr(injd, "follow_up"),
-                        attr(injd, "data_exposures"),
-                        attr(injd, "data_injuries")))
+  expect_error(new_injd(data.frame(injd), "match_min"))
 })
 
 test_that("validate_injd works", {
   newinjd <- validate_injd(injd)
   expect_equal(newinjd, injd)
 
-  follow_up <- attr(injd, "follow_up")
-  follow_up[1, "t0"] <- as.Date("2017-07-05")
-  injd2 <- injd
-  attr(injd2, "follow_up") <- follow_up
-  expect_error(validate_injd(injd2), "is not properly built")
-
-  data_injuries <- attr(injd, "data_injuries")
-  data_injuries <- data_injuries[-1, ]
-  injd3 <- injd
-  attr(injd3, "data_injuries") <- data_injuries
-  expect_error(validate_injd(injd3), "do not have same info on injuries")
-
-  injd4 <- injd
-  injd4$status[[1]] <- -1
-  expect_error(validate_injd(injd4), "status is not correctly recorded")
-
   injd5 <- injd
   injd5$tstop_minPlay[[2]] <- injd5$tstop_minPlay[[2]] + 1
   expect_error(validate_injd(injd5), "tstart and tstop are not correctly recorded")
+
+  injdquitvar <- injd
+  names(injdquitvar)[[3]] <- "tfinal"
+  expect_error(validate_injd(injdquitvar), "The `x` data frame has not proper column names")
+
+  injddates <- injd
+  injddates$date_injured <- injddates$date_recovered + 1
+  expect_error(validate_injd(injddates), "Injury and recovery dates are not properly recorded in `x`")
+
+  injddates <- injd
+  injddates$date_injured[[1]] <- NA
+  injddates$status[[1]] <- 1
+  expect_error(validate_injd(injddates), "status is not correctly recorded in `x`")
 })
